@@ -14,9 +14,6 @@ android {
         }
     }
     buildTypes {
-        debug {
-            signingConfig signingConfigs.config
-        }
         release {
             signingConfig signingConfigs.config
             minifyEnabled true
@@ -51,12 +48,6 @@ android {
                 //库地址
                 jniLibs.srcDirs = ['libs']
             }
-        }
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     externalNativeBuild {

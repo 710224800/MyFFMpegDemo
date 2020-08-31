@@ -1,7 +1,7 @@
 ext {
     android = [
             compileSdkVersion: 25,
-            buildToolsVersion: "25.0.3",
+            buildToolsVersion: "28.0.3",
             applicationId    : "com.onzhou.ffmpeg",
             minSdkVersion    : 21,
             targetSdkVersion : 25,

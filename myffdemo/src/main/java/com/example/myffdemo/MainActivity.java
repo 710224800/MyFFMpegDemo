@@ -13,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
         NativeLib native_lib = new NativeLib();
 
         TextView text_view = (TextView) findViewById(R.id.text_view);
-        text_view.setText(native_lib.stringFromJNI());
+        text_view.setText(native_lib.getFFMpegConfiguration());
     }
 
 }

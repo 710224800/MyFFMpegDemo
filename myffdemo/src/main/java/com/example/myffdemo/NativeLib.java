@@ -7,5 +7,5 @@ public class NativeLib {
     static {
         System.loadLibrary("native-lib");
     }
-    public native String stringFromJNI();
+    public native String getFFMpegConfiguration();
 }

@@ -14,7 +14,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
-                cppFlags "-std=c++11"
+                cppFlags "-std=gnu++11" // -std=c++11，支持C++11标准； -std=gnu++11，支持C++11标准和GNU扩展特性；比如，GNU extensions to the C and C++ languages
             }
         }
         ndk {

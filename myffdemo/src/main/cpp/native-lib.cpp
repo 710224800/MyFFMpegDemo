@@ -92,6 +92,12 @@ Java_com_example_myffdemo_NativeLib_avformatOpenInput(
         re = av_read_frame(avFormatContext, pkt);
         if(re != 0){
             LOGE("读取到结尾处");
+            AVRational timeBase = avFormatContext->streams[videoStream]->time_base;
+            double timeBaseDouble = r2d(timeBase);
+            LOGE("videoStream timeBase = %d / %d  double=%f", timeBase.num, timeBase.den, timeBaseDouble);
+            int pos = (int)(20 * timeBaseDouble);
+            LOGE("seek to pos=%d", pos);
+            av_seek_frame(avFormatContext, videoStream, pos, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_FRAME);
             break;
         }
         LOGE("stream=%d, size=%d, pts=%lld, flags=%d", pkt->stream_index, pkt->size,

@@ -3,6 +3,7 @@ package com.example.myffdemo.features;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.example.myffdemo.LogUtil;
 import com.example.myffdemo.NativeLib;
@@ -12,11 +13,12 @@ import java.io.File;
 
 public class TestOpenActivity extends AppCompatActivity {
 
+    String path = Environment.getExternalStorageDirectory().getPath() + "/1080.mp4";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_open_layout);
-        String path = Environment.getExternalStorageDirectory().getPath() + "/1080.mp4";
         File file = new File(path);
         if(file.exists()){
             LogUtil.d("file exists");
@@ -24,6 +26,9 @@ public class TestOpenActivity extends AppCompatActivity {
             LogUtil.d("file not exists");
         }
         NativeLib.getInstance().testFileOpen(path, this);
+    }
+
+    public void onAVFormatOpenInput(View v){
         NativeLib.getInstance().avformatOpenInput(path, this);
     }
 }

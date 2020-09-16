@@ -84,6 +84,20 @@ Java_com_example_myffdemo_NativeLib_avformatOpenInput(
                     avStream->codecpar->channels, avStream->codecpar->format);
         }
     }
+    audioStream = av_find_best_stream(avFormatContext, AVMEDIA_TYPE_AUDIO, -1, -1, NULL, 0);
+    LOGE("av_find_best_stream audioStream=%d", audioStream);//这里是看一下audioStream id是多少，用于下面区分
+
+    AVPacket *pkt = av_packet_alloc();
+    while(true){
+        re = av_read_frame(avFormatContext, pkt);
+        if(re != 0){
+            LOGE("读取到结尾处");
+            break;
+        }
+        LOGE("stream=%d, size=%d, pts=%lld, flags=%d", pkt->stream_index, pkt->size,
+             pkt->pts, pkt->flags);
+    }
+    av_packet_unref(pkt); // 引用计数-1
     //关闭
     avformat_close_input(&avFormatContext);
     //释放String内存

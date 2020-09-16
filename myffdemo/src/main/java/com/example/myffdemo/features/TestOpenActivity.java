@@ -24,6 +24,6 @@ public class TestOpenActivity extends AppCompatActivity {
             LogUtil.d("file not exists");
         }
         NativeLib.getInstance().testFileOpen(path, this);
-
+        NativeLib.getInstance().avformatOpenInput(path, this);
     }
 }

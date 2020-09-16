@@ -1,6 +1,8 @@
 package com.example.myffdemo;
 
+import android.Manifest;
 import android.content.Intent;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        NativeLib native_lib = new NativeLib();
+        NativeLib native_lib = NativeLib.getInstance();
 
         TextView text_view = (TextView) findViewById(R.id.text_view);
         text_view.setText(native_lib.getFFMpegConfiguration());
@@ -26,6 +28,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        requestPermission();
+    }
+
+    private String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+    /**
+     * 请求授权
+     */
+    private void requestPermission(){
+        ActivityCompat.requestPermissions(this, permissions,1);
     }
 
 }

@@ -98,12 +98,12 @@ Java_com_example_myffdemo_NativeLib_avformatOpenInput(
             int pos = (int)(20 * timeBaseDouble);
             LOGE("seek to pos=%d", pos);
             av_seek_frame(avFormatContext, videoStream, pos, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_FRAME);
-            break;
+            continue; // 这里seek后，继续读取
         }
         LOGE("stream=%d, size=%d, pts=%lld, flags=%d", pkt->stream_index, pkt->size,
              pkt->pts, pkt->flags);
+        av_packet_unref(pkt); // 引用计数-1 // 释放内存，要不然内存会一直增长
     }
-    av_packet_unref(pkt); // 引用计数-1
     //关闭
     avformat_close_input(&avFormatContext);
     //释放String内存

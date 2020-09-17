@@ -5,6 +5,7 @@
 extern "C"{
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
+#include <libavutil/time.h>
 }
 
 extern "C" JNIEXPORT jstring JNICALL
@@ -110,6 +111,23 @@ Java_com_example_myffdemo_NativeLib_avformatOpenInput(
         LOGE("avcodec_open2 vdecoder failed");
         return -1;
     }
+    ////////////////////////////////////////////////////////////////////
+    //打开音频解码器
+    AVCodec * adecoder = avcodec_find_decoder(avFormatContext->streams[audioStream]->codecpar->codec_id);
+    if(!adecoder){
+        LOGE("avcodec_find_decoder adecoder failed");
+        return -1;
+    }
+    LOGE("avcodec_find_decoder adecoder success");
+    AVCodecContext *acc = avcodec_alloc_context3(adecoder);
+    avcodec_parameters_to_context(acc, avFormatContext->streams[audioStream]->codecpar);
+    acc->thread_count = 1;
+
+    re = avcodec_open2(acc, 0, 0);
+    if(re != 0){
+        LOGE("avcodec_open2 adecoder failed");
+        return -1;
+    }
 
     //读取数据
     AVPacket *pkt = av_packet_alloc();
@@ -128,6 +146,7 @@ Java_com_example_myffdemo_NativeLib_avformatOpenInput(
         LOGE("stream=%d, size=%d, pts=%lld, flags=%d", pkt->stream_index, pkt->size,
              pkt->pts, pkt->flags);
         av_packet_unref(pkt); // 引用计数-1 // 释放内存，要不然内存会一直增长
+        av_usleep(1000000); // 延时1秒
     }
     //关闭
     avformat_close_input(&avFormatContext);

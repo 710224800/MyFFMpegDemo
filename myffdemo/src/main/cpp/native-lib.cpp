@@ -49,6 +49,9 @@ Java_com_example_myffdemo_NativeLib_avformatOpenInput(
     av_register_all();
     //初始化网络
     avformat_network_init();
+
+    avcodec_register_all();//这个貌似不调用也没关系，有待考证（应该是在某个新版，废弃了，不再需要调用）
+
     //打开文件
     AVFormatContext *avFormatContext = NULL;
     int re = avformat_open_input(&avFormatContext, url, 0, 0);
@@ -84,9 +87,31 @@ Java_com_example_myffdemo_NativeLib_avformatOpenInput(
                     avStream->codecpar->channels, avStream->codecpar->format);
         }
     }
+    //获取stream id的另一种方式：av_find_best_stream
     audioStream = av_find_best_stream(avFormatContext, AVMEDIA_TYPE_AUDIO, -1, -1, NULL, 0);
     LOGE("av_find_best_stream audioStream=%d", audioStream);//这里是看一下audioStream id是多少，用于下面区分
 
+    //获取视频解码器（软解码器）
+    AVCodec *vdecoder = avcodec_find_decoder(avFormatContext->streams[videoStream]->codecpar->codec_id);
+    //硬解码
+    //decoder = avcodec_find_decoder_by_name("h264_mediacodec");
+    if(vdecoder == nullptr){ // !decoder
+        LOGE("avcodec_find_decoder vdecoder failed");
+        return -1;
+    }
+    LOGE("avcodec_find_decoder vdecoder success");
+    //解码器初始化
+    AVCodecContext *vcc = avcodec_alloc_context3(vdecoder);
+    avcodec_parameters_to_context(vcc, avFormatContext->streams[videoStream]->codecpar);
+    vcc->thread_count = 1;
+    //打开解码器
+    re = avcodec_open2(vcc, 0, 0);
+    if(re != 0){
+        LOGE("avcodec_open2 vdecoder failed");
+        return -1;
+    }
+
+    //读取数据
     AVPacket *pkt = av_packet_alloc();
     while(true){
         re = av_read_frame(avFormatContext, pkt);

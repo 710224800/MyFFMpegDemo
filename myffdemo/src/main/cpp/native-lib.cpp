@@ -111,7 +111,7 @@ Java_com_example_myffdemo_NativeLib_avformatOpenInput(
     //获取视频解码器（软解码器）
     AVCodec *vdecoder = avcodec_find_decoder(avFormatContext->streams[videoStream]->codecpar->codec_id);
     //硬解码
-    //decoder = avcodec_find_decoder_by_name("h264_mediacodec");
+    vdecoder = avcodec_find_decoder_by_name("h264_mediacodec");
     if(vdecoder == nullptr){ // !decoder
         LOGE("avcodec_find_decoder vdecoder failed");
         return -1;

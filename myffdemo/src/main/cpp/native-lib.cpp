@@ -6,6 +6,22 @@ extern "C"{
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavutil/time.h>
+#include <libavcodec/jni.h>
+}
+
+extern "C" JNIEXPORT jint
+JNI_OnLoad(JavaVM *vm, void *res){
+    av_jni_set_java_vm(vm, 0); // 为ffmpeg设置 java vm
+
+    ///////////// 下面这是一段学习JNI_OnLoad的测试代码
+    JNIEnv *env = NULL;
+    if(vm->GetEnv((void **)&env, JNI_VERSION_1_4) != JNI_OK){
+        LOGE("无法通过vm获取JNIEnv");
+    }
+    LOGE("通过vm获取JNIEnv success");
+    ///////////// 测试代码结束
+
+    return JNI_VERSION_1_4;
 }
 
 extern "C" JNIEXPORT jstring JNICALL
@@ -35,7 +51,7 @@ Java_com_example_myffdemo_NativeLib_testFileOpen(
     return 0;
 }
 
-double r2d(AVRational avRational){
+static double r2d(AVRational avRational){
     double result = avRational.num == 0 || avRational.den == 0 ? 0 : (double)avRational.num / (double)avRational.den;
     LOGE("r2d result=%f", result);
     return result;

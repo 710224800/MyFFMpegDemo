@@ -1,3 +1,4 @@
+include ':myffmpeglibrary'
 include ':myffdemo'
 include ':ffmpeg-single-swscale', ':ffmpeg-audio-encode', ':ffmpeg-muxer-code', ':common-avcapture', ':audio-opensles', ':common-static'
 include ':ffmpeg-multiple-hello'

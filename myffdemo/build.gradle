@@ -39,6 +39,6 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation project(path: ':libyuv-single')
-    implementation project(path: ':ffmpeg-single')
+    implementation project(path: ':myffmpeglibrary')
     testImplementation 'junit:junit:4.12'
 }

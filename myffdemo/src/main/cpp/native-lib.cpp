@@ -131,6 +131,7 @@ Java_com_example_myffdemo_NativeLib_avformatOpenInput(
 
     //读取数据
     AVPacket *pkt = av_packet_alloc();
+    AVFrame *avFrame = av_frame_alloc();
     while(true){
         re = av_read_frame(avFormatContext, pkt);
         if(re != 0){
@@ -145,7 +146,30 @@ Java_com_example_myffdemo_NativeLib_avformatOpenInput(
         }
         LOGE("stream=%d, size=%d, pts=%lld, flags=%d", pkt->stream_index, pkt->size,
              pkt->pts, pkt->flags);
+        AVCodecContext *cc = vcc;
+        if(pkt->stream_index == audioStream){
+            cc = acc;
+        }
+        //发送到线程中解码
+        re = avcodec_send_packet(cc, pkt);
+        //清理
+        int p = pkt->pts;
         av_packet_unref(pkt); // 引用计数-1 // 释放内存，要不然内存会一直增长
+
+        //读陬Frame
+        if(re != 0){
+            LOGE("avcodec_send_packet failed");
+        } else {
+            for(;;){
+                re = avcodec_receive_frame(cc, avFrame);
+                if(re != 0){
+                    //LOGE("avcodec_receive_frame failed");
+                    break;
+                }
+                LOGE("avcodec_receive_frame pts=%lld", avFrame->pts);
+            }
+        }
+
         av_usleep(1000000); // 延时1秒
     }
     //关闭

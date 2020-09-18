@@ -7,6 +7,7 @@ extern "C"{
 #include <libavformat/avformat.h>
 #include <libavutil/time.h>
 #include <libavcodec/jni.h>
+#include <libswscale/swscale.h>
 }
 
 extern "C" JNIEXPORT jint
@@ -148,6 +149,12 @@ Java_com_example_myffdemo_NativeLib_avformatOpenInput(
     //读取数据
     AVPacket *pkt = av_packet_alloc();
     AVFrame *avFrame = av_frame_alloc();
+    //相素转换
+    SwsContext *swsContext = NULL;
+    int outWidth = 1280;
+    int outHeight = 720;
+    char *rgb = new char[1920 * 1080 * 4];
+
     while(true){
         re = av_read_frame(avFormatContext, pkt);
         if(re != 0){
@@ -182,11 +189,29 @@ Java_com_example_myffdemo_NativeLib_avformatOpenInput(
                     //LOGE("avcodec_receive_frame failed");
                     break;
                 }
-                LOGE("avcodec_receive_frame pts=%lld", avFrame->pts);
+                //LOGE("avcodec_receive_frame pts=%lld", avFrame->pts);
+                if(cc == vcc){
+                    swsContext = sws_getCachedContext(swsContext,
+                            avFrame->width, avFrame->height,(AVPixelFormat)avFrame->format,
+                            outWidth, outHeight, AV_PIX_FMT_RGBA, SWS_FAST_BILINEAR,
+                            0, 0, 0);
+                    if(swsContext == nullptr){
+                        LOGE("sws_getCachedContext failed");
+                    } else {
+                        uint8_t *data[AV_NUM_DATA_POINTERS] = {0};
+                        data[0] = (uint8_t *) rgb;
+                        int lines[AV_NUM_DATA_POINTERS] = {0};
+                        lines[0] = outWidth * 4;
+
+                        int height = sws_scale(swsContext, (const uint8_t **)avFrame->data, avFrame->linesize,
+                                0, avFrame->height, data, lines);
+                        LOGE("sws_scale = %d", height);
+                    }
+                }
             }
         }
 
-        av_usleep(1000000); // 延时1秒
+        av_usleep(500000); // 延时1秒
     }
     //关闭
     avformat_close_input(&avFormatContext);

@@ -8,6 +8,7 @@ extern "C"{
 #include <libavutil/time.h>
 #include <libavcodec/jni.h>
 #include <libswscale/swscale.h>
+#include <libswresample/swresample.h>
 }
 
 extern "C" JNIEXPORT jint
@@ -155,6 +156,20 @@ Java_com_example_myffdemo_NativeLib_avformatOpenInput(
     int outHeight = 720;
     char *rgb = new char[1920 * 1080 * 4];
 
+    //音频重采样
+    char * pcm = new char [4800 * 4 * 2]; // 这个buffer，可以大了，不能小了
+    // 音频重采样，上下文初始化
+    SwrContext *aSwrCtx = swr_alloc();
+    aSwrCtx = swr_alloc_set_opts(aSwrCtx,
+            av_get_default_channel_layout(2),
+            AV_SAMPLE_FMT_S16, acc->sample_rate, av_get_default_channel_layout(acc->channels),
+            acc->sample_fmt, acc->sample_rate, 0, 0);
+    re = swr_init(aSwrCtx);
+    if(re != 0){
+        LOGE("swr_init failed");
+        return  -1;
+    }
+
     while(true){
         re = av_read_frame(avFormatContext, pkt);
         if(re != 0){
@@ -207,6 +222,13 @@ Java_com_example_myffdemo_NativeLib_avformatOpenInput(
                                 0, avFrame->height, data, lines);
                         LOGE("sws_scale = %d", height);
                     }
+                } else {
+                    //音频重采样
+                    uint8_t *out[2] = {0};
+                    out[0] = (uint8_t *) pcm;
+                    int len = swr_convert(aSwrCtx, out, avFrame->nb_samples,
+                                          (const uint8_t **)avFrame->data, avFrame->nb_samples);
+                    LOGE("swr_convert len=%d", len);
                 }
             }
         }

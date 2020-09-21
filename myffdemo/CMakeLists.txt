@@ -50,6 +50,14 @@ set_target_properties(swscale
         ${LIBFFMPEG_DIR}/libs/${ANDROID_ABI}/libswscale.so
         )
 
+add_library(swresample
+        SHARED
+        IMPORTED)
+set_target_properties(swresample
+        PROPERTIES IMPORTED_LOCATION
+        ${LIBFFMPEG_DIR}/libs/${ANDROID_ABI}/libswresample.so
+        )
+
 add_library(libyuv
         SHARED
         IMPORTED)
@@ -70,7 +78,7 @@ add_library( native-lib
 
 
 target_link_libraries( native-lib
-                        avcodec avfilter avformat avutil swscale
+                        avcodec avfilter avformat avutil swscale swresample
                         libyuv
                         android #这个应该是android的一些系统库
                        log )

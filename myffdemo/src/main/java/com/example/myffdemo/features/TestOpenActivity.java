@@ -28,7 +28,7 @@ public class TestOpenActivity extends AppCompatActivity {
         NativeLib.getInstance().testFileOpen(path, this);
     }
 
-    public void onAVFormatOpenInput(View v){
-        NativeLib.getInstance().avformatOpenInput(path, this);
+    public void onOpenSlTest(View v){
+        int i = NativeLib.getInstance().openslTest(path, this);
     }
 }

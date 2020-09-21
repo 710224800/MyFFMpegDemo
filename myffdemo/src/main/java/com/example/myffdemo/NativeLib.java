@@ -21,5 +21,6 @@ public class NativeLib {
 
     public native String getFFMpegConfiguration();
     public native int testFileOpen(String url, Object handle);
-    public native int avformatOpenInput(String url, Object handle);
+    public native int avformatOpenInput(String url, Object surface);
+    public native int openslTest(String url, Object handle);
 }

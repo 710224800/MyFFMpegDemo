@@ -13,7 +13,7 @@ import java.io.File;
 
 public class TestOpenActivity extends AppCompatActivity {
 
-    String path = Environment.getExternalStorageDirectory().getPath() + "/1080.mp4";
+    public static String path = Environment.getExternalStorageDirectory().getPath() + "/1080.mp4";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

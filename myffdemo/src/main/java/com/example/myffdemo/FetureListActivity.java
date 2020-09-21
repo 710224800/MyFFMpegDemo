@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.example.myffdemo.features.TestOpenActivity;
+import com.example.myffdemo.features.XplayActivity;
 
 public class FetureListActivity extends AppCompatActivity {
 
@@ -17,5 +18,9 @@ public class FetureListActivity extends AppCompatActivity {
 
     public void onTestOpen(View v){
         startActivity(new Intent(this, TestOpenActivity.class));
+    }
+
+    public void onTestXplay(View view) {
+        startActivity(new Intent(this, XplayActivity.class));
     }
 }

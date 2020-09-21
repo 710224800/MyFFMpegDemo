@@ -9,9 +9,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <Button
-            android:id="@+id/feature1"
             android:text="test_open"
             android:onClick="onTestOpen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:text="test_xplay"
+            android:onClick="onTestXplay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

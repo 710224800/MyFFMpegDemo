@@ -1,6 +1,9 @@
 #include <jni.h>
 #include <string>
 #include <android/log.h>
+#include <android/native_window.h>
+#include <android/native_window_jni.h>
+
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "native-lib", __VA_ARGS__)
 extern "C"{
 #include <libavcodec/avcodec.h>
@@ -61,7 +64,7 @@ static double r2d(AVRational avRational){
 
 extern "C" JNIEXPORT jint JNICALL
 Java_com_example_myffdemo_NativeLib_avformatOpenInput(
-        JNIEnv* env, jobject instance, jstring url_, jobject handle) {
+        JNIEnv* env, jobject instance, jstring url_, jobject surface) {
     const char *url = env->GetStringUTFChars(url_, nullptr);
     LOGE("avformatOpenInput receive url= %s", url);
     //初始化解封装
@@ -169,6 +172,9 @@ Java_com_example_myffdemo_NativeLib_avformatOpenInput(
         LOGE("swr_init failed");
         return  -1;
     }
+    ANativeWindow *nwin = ANativeWindow_fromSurface(env, surface);
+    ANativeWindow_setBuffersGeometry(nwin, outWidth, outHeight, WINDOW_FORMAT_RGBA_8888);
+    ANativeWindow_Buffer wbuff;
 
     while(true){
         re = av_read_frame(avFormatContext, pkt);
@@ -221,6 +227,13 @@ Java_com_example_myffdemo_NativeLib_avformatOpenInput(
                         int height = sws_scale(swsContext, (const uint8_t **)avFrame->data, avFrame->linesize,
                                 0, avFrame->height, data, lines);
                         LOGE("sws_scale = %d", height);
+                        if(height > 0){
+                            re = ANativeWindow_lock(nwin, &wbuff, 0);
+                            LOGE("ANativeWindow_lock re=%d", re);
+                            uint8_t *dst = (uint8_t *)wbuff.bits;
+                            memcpy(dst, rgb, outWidth * outHeight * 4);
+                            ANativeWindow_unlockAndPost(nwin);
+                        }
                     }
                 } else {
                     //音频重采样
@@ -233,7 +246,7 @@ Java_com_example_myffdemo_NativeLib_avformatOpenInput(
             }
         }
 
-        av_usleep(500000); // 延时1秒
+        //av_usleep(500000); // 延时1秒
     }
     //关闭
     avformat_close_input(&avFormatContext);

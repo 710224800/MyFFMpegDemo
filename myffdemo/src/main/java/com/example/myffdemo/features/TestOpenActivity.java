@@ -14,6 +14,7 @@ import java.io.File;
 public class TestOpenActivity extends AppCompatActivity {
 
     public static String path = Environment.getExternalStorageDirectory().getPath() + "/1080.mp4";
+    public static String pcmFile = Environment.getExternalStorageDirectory().getPath() + "/test.pcm";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,6 @@ public class TestOpenActivity extends AppCompatActivity {
     }
 
     public void onOpenSlTest(View v){
-        int i = NativeLib.getInstance().openslTest(path, this);
+        int i = NativeLib.getInstance().openslTest(pcmFile, this);
     }
 }

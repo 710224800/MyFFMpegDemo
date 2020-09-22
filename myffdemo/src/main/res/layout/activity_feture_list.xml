@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <Button
-            android:text="test_open"
+            android:text="on接口测试"
             android:onClick="onTestOpen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

@@ -119,6 +119,54 @@ Java_com_example_myffdemo_NativeLib_openglTest(JNIEnv *env, jobject thiz, jstrin
     //片元shader
     GLint fsh = InitShader(fragYUV420P, GL_FRAGMENT_SHADER);
 
+    ////////////////////////////////////
+    //创建渲染程序
+    GLint program = glCreateProgram();
+    if(program == 0){
+        LOGE("glCreateProgram failed");
+        return -1;
+    }
+    //渲染程序中加入着色器代码
+    glAttachShader(program, vsh);
+    glAttachShader(program, fsh);
 
-    return 9090;
+    //链接程序
+    glLinkProgram(program);
+    GLint status = 0;
+    glGetProgramiv(program, GL_LINK_STATUS, &status);
+    if(status != GL_TRUE){
+        LOGE("glLinkProgram failed");
+        return -1;
+    }
+    glUseProgram(program);
+    LOGE("glUseProgram success");
+    /////////////////////////////////////
+
+    //加入三维顶点数据，两个三角形组成正方形
+    static float vers[] = {
+            1.0f,-1.0f,0.0f,
+            -1.0f,-1.0f,0.0f,
+            1.0f,1.0f,0.0f,
+            -1.0f,1.0f,0.0f,
+    };
+
+    GLuint apos = glGetAttribLocation(program, "aPosition");
+    glEnableVertexAttribArray(apos);
+    //传递顶点
+    glVertexAttribPointer(apos, 3, GL_FLOAT, GL_FALSE, 12, vers);
+
+    //加入材质坐标数据
+    static float txts[] = {
+            1.0f,0.0f , //右下
+            0.0f,0.0f,
+            1.0f,1.0f,
+            0.0,1.0
+    };
+
+    GLuint atex = glGetAttribLocation(program, "aTexCoord");
+    glEnableVertexAttribArray(atex);
+    glVertexAttribPointer(atex, 2, GL_FLOAT, GL_FALSE, 8, txts);
+
+    LOGE("return 0");
+    return 0;
 }

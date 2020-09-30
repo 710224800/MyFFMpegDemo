@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.myffdemo.features.GLSurfaceActivity;
 import com.example.myffdemo.features.TestOpenActivity;
 import com.example.myffdemo.features.XplayActivity;
 
@@ -22,5 +23,9 @@ public class FetureListActivity extends AppCompatActivity {
 
     public void onTestXplay(View view) {
         startActivity(new Intent(this, XplayActivity.class));
+    }
+
+    public void onTestGlsurfaceView(View view) {
+        startActivity(new Intent(this, GLSurfaceActivity.class));
     }
 }

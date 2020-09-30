@@ -23,4 +23,5 @@ public class NativeLib {
     public native int testFileOpen(String url, Object handle);
     public native int avformatOpenInput(String url, Object surface);
     public native int openslTest(String url, Object handle);
+    public native int openglTest(String url, Object handle);
 }

@@ -11,12 +11,20 @@
         <Button
             android:text="on接口测试"
             android:onClick="onTestOpen"
+            android:textAllCaps="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <Button
             android:text="test_xplay"
             android:onClick="onTestXplay"
+            android:layout_width="wrap_content"
+            android:textAllCaps="false"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:text="onTestGlsurfaceView"
+            android:onClick="onTestGlsurfaceView"
+            android:textAllCaps="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

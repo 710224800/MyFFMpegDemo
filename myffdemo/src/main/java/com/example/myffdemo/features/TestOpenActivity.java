@@ -4,6 +4,7 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.myffdemo.LogUtil;
 import com.example.myffdemo.NativeLib;
@@ -31,5 +32,10 @@ public class TestOpenActivity extends AppCompatActivity {
 
     public void onOpenSlTest(View v){
         int i = NativeLib.getInstance().openslTest(pcmFile, this);
+    }
+
+    public void onOpenGLTest(View view) {
+        Toast.makeText(this, "需要在GLSurfaceView中调用", Toast.LENGTH_LONG).show();
+//        NativeLib.getInstance().openglTest(pcmFile, this);
     }
 }

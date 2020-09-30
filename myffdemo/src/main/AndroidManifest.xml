@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".features.XplayActivity"></activity>
+        <activity android:name=".features.GLSurfaceActivity"/>
+        <activity android:name=".features.XplayActivity"/>
         <activity android:name=".features.TestOpenActivity" />
         <activity android:name=".FetureListActivity" />
         <activity android:name=".MainActivity">

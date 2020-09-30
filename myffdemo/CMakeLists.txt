@@ -75,12 +75,15 @@ include_directories(${LIBFFMPEG_DIR}/libs/${ANDROID_ABI}/include)
 add_library( native-lib
              SHARED
              src/main/cpp/native-lib.cpp
-             src/main/cpp/myopensl.cpp)
+             src/main/cpp/myopensl.cpp
+             src/main/cpp/myopengl.cpp)
 
 
 target_link_libraries( native-lib
                         avcodec avfilter avformat avutil swscale swresample
                         libyuv
                         OpenSLES
+                        GLESv2
+                        EGL
                         android #这个应该是android的一些系统库
                        log )

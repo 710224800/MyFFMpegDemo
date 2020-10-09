@@ -62,9 +62,16 @@ GLint InitShader(const char *code, GLint type){
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_example_myffdemo_NativeLib_openglTest(JNIEnv *env, jobject thiz, jstring url,
+Java_com_example_myffdemo_NativeLib_openglTest(JNIEnv *env, jobject thiz, jstring url_,
                                                jobject surface) {
     LOGE("openGLTest");
+    const char *url = env->GetStringUTFChars(url_, 0);
+    FILE *fp = fopen(url, "rb");
+    if(!fp){
+        LOGE("fopen %s failed", url);
+        return -1;
+    }
+    LOGE("fopen %s success", url);
     ANativeWindow *nwin = ANativeWindow_fromSurface(env, surface);
 
     //1. EGL display创建和初始化
@@ -160,15 +167,15 @@ Java_com_example_myffdemo_NativeLib_openglTest(JNIEnv *env, jobject thiz, jstrin
             1.0f,0.0f , //右下
             0.0f,0.0f,
             1.0f,1.0f,
-            0.0,1.0
+            0.0f,1.0f
     };
 
     GLuint atex = glGetAttribLocation(program, "aTexCoord");
     glEnableVertexAttribArray(atex);
     glVertexAttribPointer(atex, 2, GL_FLOAT, GL_FALSE, 8, txts);
 
-    int width = 424;
-    int height = 240;
+    int width = 480;
+    int height = 360;
 
     //材质纹理初始化
     //设置纹理层
@@ -181,32 +188,57 @@ Java_com_example_myffdemo_NativeLib_openglTest(JNIEnv *env, jobject thiz, jstrin
     //创建三个纹理
     glGenTextures(3, texts);
 
-    for(int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++){
         //设置纹理属性
-        glBindTexture(EGL_TEXTURE_2D, texts[i]);
+        glBindTexture(GL_TEXTURE_2D,texts[i]);
         //缩小的过滤器
-        glTexParameteri(EGL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(EGL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        //设置纹理格式和大小
-        int w = 0;
-        int h = 0;
-        if(i == 0) { // y 数据
-            w = width;
-            h = height;
-        } else { // uv 数据 宽高都要除以2
-            w = width / 2;
-            h = height / 2;
-        }
-        glTexImage2D(GL_TEXTURE_2D, 0, //细节基本 0默认
-                     GL_LUMINANCE, //gpu内部格式 亮度，灰度图
-                     w, h, //拉升到全屏
-                     0, //边框
-                     GL_LUMINANCE, //数据的像素格式 亮度，灰度图，要与上面一致
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        //设置纹理的格式和大小
+        glTexImage2D(GL_TEXTURE_2D,
+                     0,           //细节基本 0默认
+                     GL_LUMINANCE,//gpu内部格式 亮度，灰度图
+                     i == 0 ? width : width / 2, i == 0 ? height : height / 2, //拉升到全屏
+                     0,             //边框
+                     GL_LUMINANCE,//数据的像素格式 亮度，灰度图 要与上面一致
                      GL_UNSIGNED_BYTE, //像素的数据类型
-                     nullptr //纹理数据
+                     NULL                    //纹理的数据
         );
     }
 
+    ///////////////////////////////////
+    //纹理的修改和显示
+    unsigned char *buf[3] = {0};
+    buf[0] = new unsigned char[width * height];
+    buf[1] = new unsigned char[width * height / 4];
+    buf[2] = new unsigned char[width * height / 4];
+    for(int i = 0; i < 10000; i++){
+//        memset(buf[0], i, width*height);
+//        memset(buf[1], i, width*height / 4);
+//        memset(buf[2], i, width*height / 4);
+
+        // 420p yyyyyyyy uu vv
+        if(feof(fp) == 0) {
+            fread(buf[0], 1, width * height, fp);
+            fread(buf[1], 1, width * height / 4, fp);
+            fread(buf[2], 1, width * height / 4, fp);
+        }
+        for(int i2 = 0; i2 < 3; i2++){
+            //激活第i2层纹理,绑定到创建的opengl纹理
+            glActiveTexture(GL_TEXTURE0 + i2);
+            glBindTexture(GL_TEXTURE_2D,texts[i2]);
+            //替换纹理内容
+            glTexSubImage2D(GL_TEXTURE_2D,0,0,0,
+                    i2 == 0 ? width : width / 2, i2 == 0 ? height : height / 2,
+                    GL_LUMINANCE,GL_UNSIGNED_BYTE,buf[i2]);
+        }
+
+        //三维绘制
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        //窗口显示
+        eglSwapBuffers(display, winsurface);
+    }
+    env->ReleaseStringUTFChars(url_, url);
     LOGE("return 0");
     return 0;
 }

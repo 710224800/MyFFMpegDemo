@@ -1,6 +1,7 @@
 package com.example.myffdemo.view;
 
 import android.content.Context;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
@@ -22,11 +23,16 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         super(context, attrs);
         getHolder().addCallback(this);
     }
-
+    public static String yuvFile = Environment.getExternalStorageDirectory().getPath() + "/out_480x360.yuv";
     @Override
-    public void surfaceCreated(@NonNull SurfaceHolder holder) {
+    public void surfaceCreated(@NonNull final SurfaceHolder holder) {
         LogUtil.e("MySurfaceView surfaceCreated");
-        NativeLib.getInstance().openglTest("", holder.getSurface());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NativeLib.getInstance().openglTest(yuvFile, holder.getSurface());
+            }
+        }).start();
     }
 
     @Override

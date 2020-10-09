@@ -167,6 +167,46 @@ Java_com_example_myffdemo_NativeLib_openglTest(JNIEnv *env, jobject thiz, jstrin
     glEnableVertexAttribArray(atex);
     glVertexAttribPointer(atex, 2, GL_FLOAT, GL_FALSE, 8, txts);
 
+    int width = 424;
+    int height = 240;
+
+    //材质纹理初始化
+    //设置纹理层
+    glUniform1i(glGetUniformLocation(program, "yTexture"), 0);
+    glUniform1i(glGetUniformLocation(program, "uTexture"), 1);
+    glUniform1i(glGetUniformLocation(program, "vTexture"), 2);
+
+    //创建openGl纹理
+    GLuint texts[3] = {0};
+    //创建三个纹理
+    glGenTextures(3, texts);
+
+    for(int i = 0; i < 3; i++) {
+        //设置纹理属性
+        glBindTexture(EGL_TEXTURE_2D, texts[i]);
+        //缩小的过滤器
+        glTexParameteri(EGL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(EGL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        //设置纹理格式和大小
+        int w = 0;
+        int h = 0;
+        if(i == 0) { // y 数据
+            w = width;
+            h = height;
+        } else { // uv 数据 宽高都要除以2
+            w = width / 2;
+            h = height / 2;
+        }
+        glTexImage2D(GL_TEXTURE_2D, 0, //细节基本 0默认
+                     GL_LUMINANCE, //gpu内部格式 亮度，灰度图
+                     w, h, //拉升到全屏
+                     0, //边框
+                     GL_LUMINANCE, //数据的像素格式 亮度，灰度图，要与上面一致
+                     GL_UNSIGNED_BYTE, //像素的数据类型
+                     nullptr //纹理数据
+        );
+    }
+
     LOGE("return 0");
     return 0;
 }

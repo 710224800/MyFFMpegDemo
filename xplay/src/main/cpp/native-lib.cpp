@@ -19,10 +19,17 @@ Java_com_lyhao_xplay_NativeLib_getFFMpegConfig(JNIEnv *env, jobject thiz) {
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz) {
+Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring url_) {
     std::string hello = "hello world c++";
+    const char *url = env->GetStringUTFChars(url_, nullptr);
 
     IDemux *de = new FFDemux();
-    de->Open("/sdcard/test.file");
+    de->Open(url);
+    XData d = de->Read();;
+    while(d.size != -1){
+        XLOGI("Read data size is %d", d.size);
+        d = de->Read();
+    }
+    env->ReleaseStringUTFChars(url_, url);
     return env->NewStringUTF(hello.c_str());
 }

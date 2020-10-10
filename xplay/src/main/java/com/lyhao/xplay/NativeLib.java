@@ -20,5 +20,5 @@ public class NativeLib {
     }
 
     public native String getFFMpegConfig();
-    public native String testIDemuxOpen();
+    public native String testIDemuxOpen(String url);
 }

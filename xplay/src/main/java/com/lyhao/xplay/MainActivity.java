@@ -12,5 +12,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         TextView tv_ffmpeg_config = findViewById(R.id.tv_ffmpeg_config);
         tv_ffmpeg_config.setText(NativeLib.getInstance().getFFMpegConfig());
+
+        NativeLib.getInstance().testIDemuxOpen();
     }
 }

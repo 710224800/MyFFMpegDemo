@@ -75,8 +75,10 @@ include_directories(${LIBFFMPEG_DIR}/libs/${ANDROID_ABI}/include)
 add_library( native-lib
              SHARED
              src/main/cpp/native-lib.cpp
-             #src/main/cpp/myopensl.cpp
-             #src/main/cpp/myopengl.cpp
+             src/main/cpp/IDemux.cpp
+             src/main/cpp/FFDemux.cpp
+             src/main/cpp/XData.cpp
+             src/main/cpp/XLog.cpp
         )
 
 

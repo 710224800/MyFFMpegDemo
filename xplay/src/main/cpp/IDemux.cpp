@@ -7,7 +7,7 @@
 
 void IDemux::Main() {
     XData d = Read();
-    while(d.size != -1){
+    while(!isExit){
         XLOGI("Read data size is %d", d.size);
         d = Read();
     }

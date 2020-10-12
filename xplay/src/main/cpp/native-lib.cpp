@@ -17,15 +17,20 @@ Java_com_lyhao_xplay_NativeLib_getFFMpegConfig(JNIEnv *env, jobject thiz) {
 
 #include "FFDemux.h"
 
+IDemux *de = nullptr;
+
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring url_) {
     std::string hello = "hello world c++";
     const char *url = env->GetStringUTFChars(url_, nullptr);
-
-    IDemux *de = new FFDemux();
+    if(de == nullptr){
+        de = new FFDemux();
+    }
     de->Open(url);
     de->Start();
+    XSleep(3000);
+    de->Stop();
     env->ReleaseStringUTFChars(url_, url);
     return env->NewStringUTF(hello.c_str());
 }

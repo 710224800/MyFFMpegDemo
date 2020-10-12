@@ -25,11 +25,7 @@ Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring
 
     IDemux *de = new FFDemux();
     de->Open(url);
-    XData d = de->Read();;
-    while(d.size != -1){
-        XLOGI("Read data size is %d", d.size);
-        d = de->Read();
-    }
+    de->Start();
     env->ReleaseStringUTFChars(url_, url);
     return env->NewStringUTF(hello.c_str());
 }

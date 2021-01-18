@@ -20,6 +20,6 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 NativeLib.getInstance().testStop();
             }
-        }, 3500);
+        }, 1000);
     }
 }

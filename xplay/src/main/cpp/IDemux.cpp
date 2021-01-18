@@ -10,5 +10,6 @@ void IDemux::Main() {
     while(!isExit){
         XLOGI("Read data size is %d", d.size);
         d = Read();
+        notify(d);
     }
 }

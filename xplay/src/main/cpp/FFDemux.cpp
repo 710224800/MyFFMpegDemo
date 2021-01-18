@@ -53,8 +53,13 @@ static bool isFirst = true;
 FFDemux::FFDemux() {
     if(isFirst){
         isFirst = false;
+        //注册所有封装器
         av_register_all();
+
+        //注册所有的解码器
         avcodec_register_all();
+
+        //初始化网络
         avformat_network_init();
         XLOGI("register ffmpeg!");
     }

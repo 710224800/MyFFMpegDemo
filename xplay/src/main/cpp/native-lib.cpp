@@ -19,6 +19,13 @@ Java_com_lyhao_xplay_NativeLib_getFFMpegConfig(JNIEnv *env, jobject thiz) {
 
 IDemux *de = nullptr;
 
+class TestObserver : public IObserver{
+public:
+    void update(XData d){
+        XLOGI("TestObs Update data size is %d", d.size);
+    }
+};
+TestObserver *testObs = nullptr;
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring url_) {
@@ -27,6 +34,10 @@ Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring
     if(de == nullptr){
         de = new FFDemux();
     }
+    if(testObs == nullptr){
+        testObs = new TestObserver();
+    }
+    de->addObs(testObs);
     de->Open(url);
     de->Start();
 //    XSleep(3000); // 这个方法会阻塞主线程

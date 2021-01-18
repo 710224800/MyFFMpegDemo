@@ -15,5 +15,11 @@ public class MainActivity extends AppCompatActivity {
         tv_ffmpeg_config.setText(NativeLib.getInstance().getFFMpegConfig());
 
         NativeLib.getInstance().testIDemuxOpen(path1080mp4);
+        tv_ffmpeg_config.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                NativeLib.getInstance().testStop();
+            }
+        }, 3500);
     }
 }

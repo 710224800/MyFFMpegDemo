@@ -29,8 +29,16 @@ Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring
     }
     de->Open(url);
     de->Start();
-    XSleep(3000);
-    de->Stop();
+//    XSleep(3000); // 这个方法会阻塞主线程
+//    de->Stop();
     env->ReleaseStringUTFChars(url_, url);
     return env->NewStringUTF(hello.c_str());
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_lyhao_xplay_NativeLib_testStop(JNIEnv *env, jobject thiz) {
+    if(de != nullptr){
+        de->Stop();
+    }
 }

@@ -81,6 +81,9 @@ add_library( native-lib
              src/main/cpp/XLog.cpp
              src/main/cpp/XThread.cpp
              src/main/cpp/IObserver.cpp
+             src/main/cpp/XParameter.cpp
+             src/main/cpp/IDecode.cpp
+             src/main/cpp/FFDecode.cpp
         )
 
 

@@ -16,8 +16,10 @@ Java_com_lyhao_xplay_NativeLib_getFFMpegConfig(JNIEnv *env, jobject thiz) {
 }
 
 #include "FFDemux.h"
+#include "FFDecode.h"
 
 IDemux *de = nullptr;
+IDecode *vdecode = nullptr;
 
 class TestObserver : public IObserver{
 public:
@@ -37,6 +39,8 @@ Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring
     if(testObs == nullptr){
         testObs = new TestObserver();
     }
+    vdecode = new FFDecode();
+//    vdecode->open()
     de->addObs(testObs);
     de->Open(url);
     de->Start();

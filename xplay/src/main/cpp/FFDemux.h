@@ -16,10 +16,13 @@ public:
     //读取一帧数据，数据由调用者清理
     virtual XData Read();
 
+    //获取视频参数
+    virtual XParameter getVPara();
+
     FFDemux();
 
 private:
-    AVFormatContext *avFormatContext = 0;
+    AVFormatContext *avFormatContext = nullptr;
 };
 
 

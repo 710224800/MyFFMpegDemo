@@ -32,7 +32,7 @@ bool FFDemux::Open(const char *url){
 
 //读取一帧数据，数据由调用者清理
 XData FFDemux::Read(){
-    if(!avFormatContext)
+    if(avFormatContext == nullptr)
         return XData();
 
     XData data;
@@ -63,4 +63,21 @@ FFDemux::FFDemux() {
         avformat_network_init();
         XLOGI("register ffmpeg!");
     }
+}
+
+//获取视频参数
+XParameter FFDemux::getVPara() {
+    if(avFormatContext == nullptr){
+        XLOGE("getVPara failed avFormatContext == nullptr");
+        return {};
+    }
+    int re = av_find_best_stream(avFormatContext, AVMEDIA_TYPE_VIDEO,-1,
+            -1, nullptr, 0);
+    if(re < 0){
+        XLOGE("av_find_best_stream failed!");
+        return {};
+    }
+    XParameter parameter;
+    parameter.para = avFormatContext->streams[re]->codecpar;
+    return parameter;
 }

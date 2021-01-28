@@ -8,6 +8,7 @@
 #include <time64.h>
 #include "XData.h"
 #include "IObserver.h"
+#include "XParameter.h"
 
 //解封装接口
 class IDemux : public IObserver{
@@ -17,6 +18,9 @@ public:
 
     //读取一帧数据，数据由调用者清理
     virtual XData Read() = 0; //纯虚函数
+
+    //获取视频参数
+    virtual XParameter getVPara() = 0;
 
     //总时长（毫秒）
     int64_t totalMs = 0;

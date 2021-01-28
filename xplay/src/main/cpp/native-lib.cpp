@@ -36,13 +36,14 @@ Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring
     if(de == nullptr){
         de = new FFDemux();
     }
+    de->Open(url);
     if(testObs == nullptr){
         testObs = new TestObserver();
     }
-    vdecode = new FFDecode();
-//    vdecode->open()
     de->addObs(testObs);
-    de->Open(url);
+    vdecode = new FFDecode();
+    vdecode->open(de->getVPara());
+//    vdecode->open()
     de->Start();
 //    XSleep(3000); // 这个方法会阻塞主线程
 //    de->Stop();

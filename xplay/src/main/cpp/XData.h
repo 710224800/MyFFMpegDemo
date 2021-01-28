@@ -7,7 +7,7 @@
 
 
 struct XData {
-    unsigned char *data = 0;
+    unsigned char *data = nullptr;
     int size = 0;
     void Drop();
 };

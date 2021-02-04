@@ -20,6 +20,7 @@ Java_com_lyhao_xplay_NativeLib_getFFMpegConfig(JNIEnv *env, jobject thiz) {
 
 IDemux *de = nullptr;
 IDecode *vdecode = nullptr;
+IDecode *adecode = nullptr;
 
 class TestObserver : public IObserver{
 public:
@@ -28,6 +29,7 @@ public:
     }
 };
 TestObserver *testObs = nullptr;
+
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring url_) {
@@ -37,14 +39,22 @@ Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring
         de = new FFDemux();
     }
     de->Open(url);
-    if(testObs == nullptr){
-        testObs = new TestObserver();
-    }
-    de->addObs(testObs);
+//    if(testObs == nullptr){
+//        testObs = new TestObserver();
+//    }
+    //de->addObs(testObs);
     vdecode = new FFDecode();
     vdecode->open(de->getVPara());
+
+    adecode = new FFDecode();
+    adecode->open(de->getAPara());
+
+    de->addObs(vdecode);
+    de->addObs(adecode);
 //    vdecode->open()
     de->Start();
+    vdecode->Start();
+    adecode->Start();
 //    XSleep(3000); // 这个方法会阻塞主线程
 //    de->Stop();
     env->ReleaseStringUTFChars(url_, url);

@@ -27,13 +27,50 @@ bool FFDemux::Open(const char *url){
     }
     this->totalMs = avFormatContext->duration / (AV_TIME_BASE / 1000);
     XLOGI("totalMs = %lld", this->totalMs);
+    getVPara();
+    getAPara();
     return true;
+}
+
+//获取视频参数
+XParameter FFDemux::getVPara() {
+    if(avFormatContext == nullptr){
+        XLOGE("getVPara failed avFormatContext == nullptr");
+        return {};
+    }
+    int re = av_find_best_stream(avFormatContext, AVMEDIA_TYPE_VIDEO,-1, -1, nullptr, 0);
+    if(re < 0){
+        XLOGE("av_find_best_stream TYPE_VIDEO failed!");
+        return {};
+    }
+    videoStream = re;
+    XParameter parameter;
+    parameter.para = avFormatContext->streams[re]->codecpar;
+    return parameter;
+}
+
+XParameter FFDemux::getAPara() {
+    if(avFormatContext == nullptr){
+        XLOGE("getAPara avFormatContext == nullptr");
+        return {};
+    }
+    int re = av_find_best_stream(avFormatContext, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
+    if(re < 0){
+        XLOGE("av_find_best_stream TYPE_AUDIO failed!");
+        return {};
+    }
+    audioStream = re;
+    XParameter parameter;
+    parameter.para = avFormatContext->streams[re]->codecpar;
+    return parameter;
 }
 
 //读取一帧数据，数据由调用者清理
 XData FFDemux::Read(){
-    if(avFormatContext == nullptr)
-        return XData();
+    if(avFormatContext == nullptr){
+        XLOGE("Read avFormatContext == nullptr");
+        return {};
+    }
 
     XData data;
     AVPacket *pkt = av_packet_alloc();
@@ -41,12 +78,19 @@ XData FFDemux::Read(){
     if(re != 0){
         av_packet_free(&pkt);
         XLOGE("av_read_frame error re = %d", re);
-        data.size = -1;
-        return data;
+        return {};
     }
     XLOGI("pack size is %d , pts is %lld", pkt->size, pkt->pts);
     data.data = (unsigned char *) pkt;
     data.size = pkt->size;
+    if(pkt->stream_index == audioStream){
+        data.isAudio = true;
+    } else if(pkt->stream_index == videoStream){
+        data.isAudio = false;
+    } else {
+        av_packet_free(&pkt);
+        return {};
+    }
     return data;
 }
 static bool isFirst = true;
@@ -63,21 +107,4 @@ FFDemux::FFDemux() {
         avformat_network_init();
         XLOGI("register ffmpeg!");
     }
-}
-
-//获取视频参数
-XParameter FFDemux::getVPara() {
-    if(avFormatContext == nullptr){
-        XLOGE("getVPara failed avFormatContext == nullptr");
-        return {};
-    }
-    int re = av_find_best_stream(avFormatContext, AVMEDIA_TYPE_VIDEO,-1,
-            -1, nullptr, 0);
-    if(re < 0){
-        XLOGE("av_find_best_stream failed!");
-        return {};
-    }
-    XParameter parameter;
-    parameter.para = avFormatContext->streams[re]->codecpar;
-    return parameter;
 }

@@ -16,16 +16,19 @@ public:
     //打开文件，或者流媒体 rtmp http rtsp
     virtual bool Open(const char *url) = 0;  //纯虚函数
 
-    //读取一帧数据，数据由调用者清理
-    virtual XData Read() = 0; //纯虚函数
-
     //获取视频参数
     virtual XParameter getVPara() = 0;
+
+    //获取音频参数
+    virtual XParameter getAPara() = 0;
+
+    //读取一帧数据，数据由调用者清理
+    virtual XData Read() = 0; //纯虚函数
 
     //总时长（毫秒）
     int64_t totalMs = 0;
 protected:
-    virtual void Main();
+    virtual void main();
 };
 
 

@@ -13,7 +13,7 @@ public:
 
     virtual void Stop();
     //入口主函数
-    virtual void Main(){}
+    virtual void main(){}
 
 protected:
     bool isExit = false;

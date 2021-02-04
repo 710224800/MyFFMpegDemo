@@ -24,6 +24,8 @@ bool FFDecode::open(XParameter para) {
     avCodecContext = avcodec_alloc_context3(cd);
     avcodec_parameters_to_context(avCodecContext, p);
 
+    avCodecContext->thread_count = 8;
+
     // 打开解码器
     int re = avcodec_open2(avCodecContext, 0, 0);
     if(re != 0){
@@ -32,6 +34,8 @@ bool FFDecode::open(XParameter para) {
         XLOGE("avcodec_open2 failed = %s",buf);
         return false;
     }
+    XLOGD("codec_type=%d", avCodecContext->codec_type);
+    this->isAudio = !(AVMEDIA_TYPE_VIDEO == avCodecContext->codec_type);
     XLOGI("avcodec_open2 success!");
     return true;
 }
@@ -71,6 +75,9 @@ XData FFDecode::recvFrame() {
     xData.data = (unsigned char*) avFrame;
     if(avCodecContext->codec_type == AVMEDIA_TYPE_VIDEO){
         xData.size = (avFrame->linesize[0] + avFrame->linesize[1] + avFrame->linesize[2]) * avFrame->height;
+    } else {
+        //样本字节数 ＊ 单通道样本数 ＊ 通道数
+        xData.size = av_get_bytes_per_sample(((AVSampleFormat) avFrame->format)) * avFrame->nb_samples * avFrame->channels ; //avFrame->channels;
     }
     return xData;
 }

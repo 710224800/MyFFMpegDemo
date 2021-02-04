@@ -22,7 +22,7 @@ void XThread::Start() {
 void XThread::ThreadMain() {
     isRunning = true;
     XLOGI("线程函数进入");
-    Main();
+    main();
     XLOGI("线程函数退出");
     isRunning = false;
 }

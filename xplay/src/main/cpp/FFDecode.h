@@ -18,7 +18,7 @@ public:
     //future 模型，发送数据到线程解码
     virtual bool sendPacket(XData pkt);
 
-    //从线程中读取解码结果
+    //从线程中读取解码结果，再次调用会复用上次空间，线程不安全
     virtual XData recvFrame();
 
 protected:

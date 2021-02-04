@@ -5,10 +5,10 @@
 #include "IDemux.h"
 #include "XLog.h"
 
-void IDemux::Main() {
+void IDemux::main() {
     XData d = Read();
     while(!isExit){
-        XLOGI("Read data size is %d", d.size);
+        XLOGI("IDemux main Read data size is %d", d.size);
         d = Read();
         notify(d);
     }

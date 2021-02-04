@@ -6,7 +6,7 @@
 #include "XLog.h"
 
 void IDecode::update(XData pkt) {
-    if(pkt.isAudio != isAudio){
+    if(pkt.isAudio != isAudio){ // 视频解码器只解视频，音频解码器只解音频
         return;
     }
     while (!isExit){ // 线程未退出

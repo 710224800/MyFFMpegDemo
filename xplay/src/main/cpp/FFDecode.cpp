@@ -76,8 +76,10 @@ XData FFDecode::recvFrame() {
     XData xData;
     xData.data = (unsigned char*) avFrame;
     if(avCodecContext->codec_type == AVMEDIA_TYPE_VIDEO){
+        xData.isAudio = false;
         xData.size = (avFrame->linesize[0] + avFrame->linesize[1] + avFrame->linesize[2]) * avFrame->height;
     } else {
+        xData.isAudio = true;
         //样本字节数 ＊ 单通道样本数 ＊ 通道数
         xData.size = av_get_bytes_per_sample(((AVSampleFormat) avFrame->format)) * avFrame->nb_samples * avFrame->channels ; //avFrame->channels;
     }

@@ -40,7 +40,7 @@ void IDecode::main() {
                 if(frame.data == nullptr){
                     break;
                 }
-                XLOGI("notify frame");
+                XLOGI("notify frame %d", frame.isAudio);
                 this->notify(frame);
             }
         }

@@ -6,7 +6,7 @@ extern "C"{
 }
 
 //打开文件，或者流媒体
-bool FFDemux::Open(const char *url){
+bool FFDemux::open(const char *url){
     XLOGI("open file %s begin", url);
     //打开url
     int re = avformat_open_input(&avFormatContext, url, 0, 0);
@@ -66,7 +66,7 @@ XParameter FFDemux::getAPara() {
 }
 
 //读取一帧数据，数据由调用者清理
-XData FFDemux::Read(){
+XData FFDemux::read(){
     if(avFormatContext == nullptr){
         XLOGE("Read avFormatContext == nullptr");
         return {};

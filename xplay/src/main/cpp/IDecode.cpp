@@ -7,7 +7,7 @@
 
 void IDecode::update(XData pkt) {
     if(pkt.size == -9999){
-        Stop(); // 到文件结尾了，结束
+        stop(); // 到文件结尾了，结束
         return;
     }
     if(pkt.isAudio != isAudio){ // 视频解码器只解视频，音频解码器只解音频

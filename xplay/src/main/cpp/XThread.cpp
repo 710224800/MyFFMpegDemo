@@ -13,13 +13,13 @@ void XSleep(int mis){
     this_thread::sleep_for(du);
 }
 
-void XThread::Start() {
+void XThread::start() {
     isExit = false;
-    thread th(&XThread::ThreadMain, this);
+    thread th(&XThread::threadMain, this);
     th.detach();
 }
 
-void XThread::ThreadMain() {
+void XThread::threadMain() {
     isRunning = true;
     XLOGI("线程函数进入");
     main();
@@ -28,7 +28,7 @@ void XThread::ThreadMain() {
 }
 
 //通过判断isExit安全停止线程（不一定成功）
-void XThread::Stop() {
+void XThread::stop() {
     if(isExit){ // 已经 停止
         return;
     }
@@ -37,10 +37,10 @@ void XThread::Stop() {
     {
         if(!isRunning)
         {
-            XLOGI("Stop 停止线程成功!");
+            XLOGI("stop 停止线程成功!");
             return;
         }
         XSleep(1);
     }
-    XLOGI("Stop 停止线程超时!");
+    XLOGI("stop 停止线程超时!");
 }

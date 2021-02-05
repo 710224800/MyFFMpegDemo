@@ -6,16 +6,16 @@
 #include "XLog.h"
 
 void IDemux::main() {
-    XData d = Read();
+    XData d = read();
     while(!isExit){
         XLOGI("IDemux main Read data size is %d", d.size);
-        d = Read();
+        d = read();
         if(d.size != 0){
             notify(d);
         }
         if(d.size == -9999){
             notify(d);
-            Stop();
+            stop();
         }
     }
 }

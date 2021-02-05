@@ -9,9 +9,9 @@ void XSleep(int mis);
 
 class XThread {
 public:
-    virtual void Start();
+    virtual void start();
 
-    virtual void Stop();
+    virtual void stop();
     //入口主函数
     virtual void main(){}
 
@@ -20,7 +20,7 @@ protected:
     bool isRunning = false;
 
 private:
-    void ThreadMain();
+    void threadMain();
 };
 
 

@@ -18,6 +18,7 @@ Java_com_lyhao_xplay_NativeLib_getFFMpegConfig(JNIEnv *env, jobject thiz) {
 
 #include "FFDemux.h"
 #include "FFDecode.h"
+#include "XEGL.h"
 
 IDemux *de = nullptr;
 IDecode *vdecode = nullptr;
@@ -79,4 +80,5 @@ JNIEXPORT void JNICALL
 Java_com_lyhao_xplay_NativeLib_initView(JNIEnv *env, jobject thiz, jobject surface) {
     // TODO: implement initView()
     ANativeWindow *win = ANativeWindow_fromSurface(env, surface);
+    XEGL::get() -> init(win);
 }

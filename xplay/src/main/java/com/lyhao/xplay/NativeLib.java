@@ -22,4 +22,5 @@ public class NativeLib {
     public native String getFFMpegConfig();
     public native String testIDemuxOpen(String url);
     public native void testStop();
+    public native void initView(Object surface);
 }

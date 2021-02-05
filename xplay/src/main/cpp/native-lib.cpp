@@ -1,5 +1,6 @@
 #include <jni.h>
 #include <string>
+#include <android/native_window_jni.h>
 #include "XLog.h"
 extern "C"{
 #include <libavcodec/avcodec.h>
@@ -71,4 +72,11 @@ Java_com_lyhao_xplay_NativeLib_testStop(JNIEnv *env, jobject thiz) {
         vdecode->stop();
         vdecode = nullptr;
     }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_lyhao_xplay_NativeLib_initView(JNIEnv *env, jobject thiz, jobject surface) {
+    // TODO: implement initView()
+    ANativeWindow *win = ANativeWindow_fromSurface(env, surface);
 }

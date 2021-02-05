@@ -74,16 +74,21 @@ include_directories(${LIBFFMPEG_DIR}/libs/${ANDROID_ABI}/include)
 
 add_library( native-lib
              SHARED
-             src/main/cpp/native-lib.cpp
-             src/main/cpp/IDemux.cpp
-             src/main/cpp/FFDemux.cpp
-             src/main/cpp/XData.cpp
-             src/main/cpp/XLog.cpp
-             src/main/cpp/XThread.cpp
-             src/main/cpp/IObserver.cpp
-             src/main/cpp/XParameter.cpp
-             src/main/cpp/IDecode.cpp
-             src/main/cpp/FFDecode.cpp
+        src/main/cpp/native-lib.cpp
+        src/main/cpp/IDemux.cpp
+        src/main/cpp/FFDemux.cpp
+        src/main/cpp/XData.cpp
+        src/main/cpp/XLog.cpp
+        src/main/cpp/XThread.cpp
+        src/main/cpp/IObserver.cpp
+        src/main/cpp/XParameter.cpp
+        src/main/cpp/IDecode.cpp
+        src/main/cpp/FFDecode.cpp
+        src/main/cpp/XEGL.cpp
+        src/main/cpp/GLVideoView.cpp
+        src/main/cpp/IVideoView.cpp
+        src/main/cpp/XShader.cpp
+        src/main/cpp/XTexture.cpp
         )
 
 

@@ -39,22 +39,17 @@ Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring
         de = new FFDemux();
     }
     de->Open(url);
-//    if(testObs == nullptr){
-//        testObs = new TestObserver();
-//    }
-    //de->addObs(testObs);
     vdecode = new FFDecode();
     vdecode->open(de->getVPara());
+    de->addObs(vdecode);
 
     adecode = new FFDecode();
     adecode->open(de->getAPara());
-
-    de->addObs(vdecode);
     de->addObs(adecode);
-//    vdecode->open()
-    de->Start();
+
     vdecode->Start();
     adecode->Start();
+    de->Start();
 //    XSleep(3000); // 这个方法会阻塞主线程
 //    de->Stop();
     env->ReleaseStringUTFChars(url_, url);
@@ -66,5 +61,14 @@ JNIEXPORT void JNICALL
 Java_com_lyhao_xplay_NativeLib_testStop(JNIEnv *env, jobject thiz) {
     if(de != nullptr){
         de->Stop();
+        de = nullptr;
+    }
+    if(adecode != nullptr){
+        adecode->Stop();
+        adecode = nullptr;
+    }
+    if(vdecode != nullptr){
+        vdecode->Stop();
+        vdecode = nullptr;
     }
 }

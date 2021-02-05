@@ -78,6 +78,10 @@ XData FFDemux::Read(){
     if(re != 0){
         av_packet_free(&pkt);
         XLOGE("av_read_frame error re = %d", re);
+        if(AVERROR_EOF == re){ //到 文件 结尾
+            data.size = -9999;
+            return data;
+        }
         return {};
     }
     XLOGI("pack size is %d , pts is %lld", pkt->size, pkt->pts);

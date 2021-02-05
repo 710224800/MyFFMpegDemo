@@ -10,6 +10,12 @@ void IDemux::main() {
     while(!isExit){
         XLOGI("IDemux main Read data size is %d", d.size);
         d = Read();
-        notify(d);
+        if(d.size != 0){
+            notify(d);
+        }
+        if(d.size == -9999){
+            notify(d);
+            Stop();
+        }
     }
 }

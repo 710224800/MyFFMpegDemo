@@ -29,6 +29,9 @@ void XThread::ThreadMain() {
 
 //通过判断isExit安全停止线程（不一定成功）
 void XThread::Stop() {
+    if(isExit){ // 已经 停止
+        return;
+    }
     isExit = true;
     for(int i = 0; i < 200; i++)
     {

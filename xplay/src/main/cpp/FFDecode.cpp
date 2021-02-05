@@ -70,9 +70,10 @@ XData FFDecode::recvFrame() {
     if(re != 0){
         char buf[1024] = {0};
         av_strerror(re,buf,sizeof(buf)-1);
-        XLOGE("avcodec_receive_frame failed = %s", buf);
+        XLOGE("avcodec_receive_frame failed codecType=%d = %s",avCodecContext->codec_type, buf);
         return {};
     }
+    XLOGI("avcodec_receive_frame success codecType=%d",avCodecContext->codec_type);
     XData xData;
     xData.data = (unsigned char*) avFrame;
     if(avCodecContext->codec_type == AVMEDIA_TYPE_VIDEO){

@@ -6,6 +6,10 @@
 #include "XLog.h"
 
 void IDecode::update(XData pkt) {
+    if(pkt.size == -9999){
+        Stop(); // 到文件结尾了，结束
+        return;
+    }
     if(pkt.isAudio != isAudio){ // 视频解码器只解视频，音频解码器只解音频
         return;
     }
@@ -17,6 +21,7 @@ void IDecode::update(XData pkt) {
             packsMutex.unlock();
             break;
         }
+        XLOGI("packs.size = %d isAudio=%d", packs.size(), isAudio);
         packsMutex.unlock();
         XSleep(1);
     }
@@ -24,6 +29,7 @@ void IDecode::update(XData pkt) {
 
 void IDecode::main() {
     while (!isExit){
+        XLOGI("running isAudio=%d", isAudio);
         packsMutex.lock();
         if(packs.empty()){
             packsMutex.unlock();
@@ -37,6 +43,7 @@ void IDecode::main() {
         if(this->sendPacket(pkt)){
             while (!isExit){
                 XData frame = recvFrame();
+                XLOGI("recvFrame frame %d frame size=%d", frame.isAudio, frame.size);
                 if(frame.data == nullptr){
                     break;
                 }

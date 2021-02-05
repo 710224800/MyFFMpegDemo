@@ -20,6 +20,12 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 NativeLib.getInstance().testStop();
             }
-        }, 1000);
+        }, 600000);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NativeLib.getInstance().testStop();
     }
 }

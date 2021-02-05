@@ -27,8 +27,8 @@ bool FFDemux::open(const char *url){
     }
     this->totalMs = avFormatContext->duration / (AV_TIME_BASE / 1000);
     XLOGI("totalMs = %lld", this->totalMs);
-    getVPara();
-    getAPara();
+//    getVPara();
+//    getAPara();
     return true;
 }
 

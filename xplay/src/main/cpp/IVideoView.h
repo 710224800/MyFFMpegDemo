@@ -6,8 +6,13 @@
 #define XPLAY_IVIDEOVIEW_H
 
 
-class IVideoView {
+#include "XData.h"
 
+class IVideoView {
+public:
+    virtual void setRender(void *win) = 0;
+    virtual void render(XData data) = 0;
+    virtual void update(XData data);
 };
 
 

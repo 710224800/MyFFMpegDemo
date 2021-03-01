@@ -6,8 +6,17 @@
 #define XPLAY_GLVIDEOVIEW_H
 
 
-class GLVideoView {
+#include "XData.h"
+class XTexture;
 
+class GLVideoView {
+public:
+    virtual void setRender(void *win);
+    virtual void render(XData data);
+
+protected:
+    void *view = nullptr;
+    XTexture *txt = nullptr;
 };
 
 

@@ -21,6 +21,13 @@ public:
         sh.init();
         return true;
     }
+    virtual void draw(unsigned char *data[], int width, int height){
+        sh.getTexture(0, width, height, data[0]); //Y
+        sh.getTexture(1, width/2, height/2, data[1]); //U
+        sh.getTexture(2, width/2, height/2, data[2]); //V
+        sh.draw();
+        XEGL::get()->draw();
+    }
 };
 
 XTexture *XTexture ::create() {

@@ -20,10 +20,13 @@ Java_com_lyhao_xplay_NativeLib_getFFMpegConfig(JNIEnv *env, jobject thiz) {
 #include "FFDecode.h"
 #include "XEGL.h"
 #include "XShader.h"
+#include "IVideoView.h"
+#include "GLVideoView.h"
 
 IDemux *de = nullptr;
 IDecode *vdecode = nullptr;
 IDecode *adecode = nullptr;
+IVideoView *view = nullptr;
 
 class TestObserver : public IObserver{
 public:
@@ -49,6 +52,9 @@ Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring
     adecode = new FFDecode();
     adecode->open(de->getAPara());
     de->addObs(adecode);
+
+    view = new GLVideoView();
+    vdecode->addObs(view);
 
     vdecode->start();
     adecode->start();
@@ -81,7 +87,8 @@ JNIEXPORT void JNICALL
 Java_com_lyhao_xplay_NativeLib_initView(JNIEnv *env, jobject thiz, jobject surface) {
     // TODO: implement initView()
     ANativeWindow *win = ANativeWindow_fromSurface(env, surface);
-    XEGL::get() -> init(win);
-    XShader shader;
-    shader.init();
+    view->setRender(win);
+//    XEGL::get() -> init(win);
+//    XShader shader;
+//    shader.init();
 }

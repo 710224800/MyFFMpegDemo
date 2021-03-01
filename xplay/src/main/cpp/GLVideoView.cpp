@@ -4,6 +4,8 @@
 
 #include "GLVideoView.h"
 #include "XTexture.h"
+#include "XLog.h"
+
 void GLVideoView::setRender(void *win) {
     view = win;
 }
@@ -15,4 +17,5 @@ void GLVideoView::render(XData data) {
         txt = XTexture::create();
         txt->init(view);
     }
+    txt->draw(data.datas, data.width, data.height);
 }

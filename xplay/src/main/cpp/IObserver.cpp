@@ -17,7 +17,7 @@ void IObserver::addObs(IObserver *obs) {
 
 void IObserver::notify(XData data) {
     mux.lock();
-    XLOGI("obss.size=%d", obss.size());
+//    XLOGI("obss.size=%d", obss.size());
     for(auto & obs : obss){
         obs->update(data);
     }

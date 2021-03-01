@@ -9,6 +9,7 @@
 class XEGL {
 public:
     virtual bool init(void *win) = 0;
+    virtual void draw() = 0;
     static XEGL *get();
 
 protected:

@@ -29,7 +29,7 @@ void IDecode::update(XData pkt) {
 
 void IDecode::main() {
     while (!isExit){
-        XLOGI("running isAudio=%d", isAudio);
+//        XLOGI("running isAudio=%d", isAudio);
         packsMutex.lock();
         if(packs.empty()){
             packsMutex.unlock();
@@ -43,11 +43,11 @@ void IDecode::main() {
         if(this->sendPacket(pkt)){
             while (!isExit){
                 XData frame = recvFrame();
-                XLOGI("recvFrame frame %d frame size=%d", frame.isAudio, frame.size);
+//                XLOGI("recvFrame frame %d frame size=%d", frame.isAudio, frame.size);
                 if(frame.data == nullptr){
                     break;
                 }
-                XLOGI("notify frame %d", frame.isAudio);
+//                XLOGI("notify frame %d", frame.isAudio);
                 this->notify(frame);
             }
         }

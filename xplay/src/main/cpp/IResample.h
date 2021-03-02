@@ -2,8 +2,8 @@
 // Created by lyhao on 21-3-2.
 //
 
-#ifndef MYFFMPEGDEMO_IRESAMPLE_H
-#define MYFFMPEGDEMO_IRESAMPLE_H
+#ifndef XPLAY_IRESAMPLE_H
+#define XPLAY_IRESAMPLE_H
 
 
 #include "IObserver.h"
@@ -19,4 +19,4 @@ public:
 };
 
 
-#endif //MYFFMPEGDEMO_IRESAMPLE_H
+#endif //XPLAY_IRESAMPLE_H

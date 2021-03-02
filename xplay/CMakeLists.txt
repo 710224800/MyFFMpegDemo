@@ -89,6 +89,8 @@ add_library( native-lib
         src/main/cpp/IVideoView.cpp
         src/main/cpp/XShader.cpp
         src/main/cpp/XTexture.cpp
+        src/main/cpp/IResample.cpp
+        src/main/cpp/FFResample.cpp
         )
 
 

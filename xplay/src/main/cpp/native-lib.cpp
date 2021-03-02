@@ -24,12 +24,15 @@ Java_com_lyhao_xplay_NativeLib_getFFMpegConfig(JNIEnv *env, jobject thiz) {
 #include "GLVideoView.h"
 #include "IResample.h"
 #include "FFResample.h"
+#include "IAudioPlay.h"
+#include "SLAudioPlay.h"
 
 IDemux *de = nullptr;
 IDecode *vdecode = nullptr;
 IDecode *adecode = nullptr;
 IVideoView *view = nullptr;
 IResample *resample = nullptr;
+IAudioPlay *audioPlay = nullptr;
 
 class TestObserver : public IObserver{
 public:
@@ -61,8 +64,13 @@ Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring
     vdecode->addObs(view); // 为视频解码器 添加显示窗口，openGl实现
 
     resample = new FFResample();
-    resample->open(de->getAPara());
+    XParameter outPara = de->getAPara();
+    resample->open(de->getAPara(), outPara);
     adecode->addObs(resample); // 为音频解码器 添加重采样器，先这么叫
+
+    audioPlay = new SLAudioPlay();
+    audioPlay->startPlay(outPara);
+    resample->addObs(audioPlay);
 
     vdecode->start();
     adecode->start();

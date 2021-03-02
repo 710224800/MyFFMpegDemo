@@ -47,21 +47,22 @@ Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring
     if(de == nullptr){
         de = new FFDemux();
     }
-    de->open(url);
+    de->open(url); // 解封装器
+
     vdecode = new FFDecode();
     vdecode->open(de->getVPara());
-    de->addObs(vdecode);
+    de->addObs(vdecode); // 为解封装器添加 视频解码器
 
     adecode = new FFDecode();
     adecode->open(de->getAPara());
-    de->addObs(adecode);
+    de->addObs(adecode); // 为解封装器添加 音频解码器
 
     view = new GLVideoView();
-    vdecode->addObs(view);
+    vdecode->addObs(view); // 为视频解码器 添加显示窗口，openGl实现
 
     resample = new FFResample();
     resample->open(de->getAPara());
-    adecode->addObs(resample);
+    adecode->addObs(resample); // 为音频解码器 添加重采样器，先这么叫
 
     vdecode->start();
     adecode->start();

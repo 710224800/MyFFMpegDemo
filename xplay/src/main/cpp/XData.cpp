@@ -19,6 +19,7 @@ bool XData::Alloc(int s, const char *d) {
     if(d != nullptr){
         memcpy(this->data, d, s);
     }
+    this->size = s;
     return true;
 }
 void XData::Drop() {

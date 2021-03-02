@@ -8,6 +8,11 @@
 
 void GLVideoView::setRender(void *win) {
     view = win;
+    if(txt != nullptr){
+        XTexture *deleted = txt;
+        txt = nullptr;
+        delete deleted;
+    }
 }
 void GLVideoView::render(XData data) {
     if(view == nullptr){

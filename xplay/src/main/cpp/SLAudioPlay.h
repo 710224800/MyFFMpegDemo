@@ -13,6 +13,11 @@ public:
     virtual bool startPlay(XParameter out);
     void playCall(void *bufq);
 
+    SLAudioPlay();
+    virtual ~SLAudioPlay();
+
+protected:
+    unsigned char *buf = nullptr;
 };
 
 

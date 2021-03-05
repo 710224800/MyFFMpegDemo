@@ -14,6 +14,10 @@
 class IAudioPlay : public IObserver{
 public:
     virtual void update(XData data);
+
+    //获取缓冲数据，如没有则阻塞
+    virtual XData getData();
+
     virtual bool startPlay(XParameter out) = 0;
 
     int maxFrame = 100;

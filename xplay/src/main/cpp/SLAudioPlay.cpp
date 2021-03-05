@@ -12,6 +12,16 @@ static SLObjectItf mix = NULL;
 static SLObjectItf player = NULL;
 static SLPlayItf iplayer = NULL;
 static SLAndroidSimpleBufferQueueItf pcmQue = NULL;
+
+SLAudioPlay::SLAudioPlay() {
+    buf = new unsigned char[1024 * 1024];
+}
+
+SLAudioPlay::~SLAudioPlay() {
+    delete buf;
+    buf = nullptr;
+}
+
 static SLEngineItf CreateSL()
 {
     SLresult re;
@@ -30,6 +40,19 @@ void SLAudioPlay::playCall(void *bufq)
     if(!bufq)return;
     SLAndroidSimpleBufferQueueItf bf = (SLAndroidSimpleBufferQueueItf)bufq;
     XLOGE("SLAudioPlay::PlayCall");
+    //阻塞
+    XData d = getData();
+    XLOGE("getData size is %d", d.size);
+    if(d.size <= 0){
+        XLOGE("getData size is 0");
+        return;
+    }
+    if(buf == nullptr){
+        return;
+    }
+    memcpy(buf, d.data, d.size);
+    (*bf) -> Enqueue(bf, buf, d.size);
+    d.Drop();
 }
 
 static void PcmCall(SLAndroidSimpleBufferQueueItf bf,void *contex)

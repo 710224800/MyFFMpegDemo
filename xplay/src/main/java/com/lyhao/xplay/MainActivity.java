@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    public static String path1080mp4 = Environment.getExternalStorageDirectory().getPath() + "/1080.mp4";
+    public static String path1080mp4 = Environment.getExternalStorageDirectory().getPath() + "/v1080.mp4";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

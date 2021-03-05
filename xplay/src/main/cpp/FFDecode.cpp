@@ -9,17 +9,23 @@ extern "C"{
 #include "libavcodec/avcodec.h"
 }
 
-bool FFDecode::open(XParameter para) {
+bool FFDecode::open(XParameter para, bool isHard) {
     if(para.para == nullptr){
         return false;
     }
     AVCodecParameters *p = para.para;
     // 查找解码器
-    AVCodec *cd = avcodec_find_decoder(p->codec_id);
+    AVCodec *cd = nullptr;
+    if(isHard){
+        cd = avcodec_find_decoder_by_name("h264_mediacodec");
+    } else {
+        cd = avcodec_find_decoder(p->codec_id);
+    }
     if(cd == nullptr){
-        XLOGE("avcodec_find_decoder %d failed", p->codec_id);
+        XLOGE("avcodec_find_decoder %d failed , isHand = %d", p->codec_id, isHard);
         return false;
     }
+    XLOGE("avcodec_find_decoder %d success , isHand = %d", p->codec_id, isHard);
     // 创建解码上下文，并复制参数
     avCodecContext = avcodec_alloc_context3(cd);
     avcodec_parameters_to_context(avCodecContext, p);
@@ -88,6 +94,7 @@ XData FFDecode::recvFrame() {
         //样本字节数 ＊ 单通道样本数 ＊ 通道数
         xData.size = av_get_bytes_per_sample(((AVSampleFormat) avFrame->format)) * avFrame->nb_samples * avFrame->channels ; //avFrame->channels;
     }
+    xData.format = avFrame->format;
     memcpy(xData.datas, avFrame->data, sizeof(xData.datas));
     return xData;
 }

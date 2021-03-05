@@ -6,12 +6,14 @@
 #define XPLAY_XSHADER_H
 
 
+#include "XTextureType.h"
+
 class XShader {
 public:
-    virtual bool init();
+    virtual bool init(XType type = XTEXTURE_YUV420P);
 
     //获取材质并映射到内存
-    virtual void getTexture(unsigned int index, int width, int height, unsigned char *buf);
+    virtual void getTexture(unsigned int index, int width, int height, unsigned char *buf, bool isa=false);
     virtual void draw();
 protected:
     unsigned int vsh = 0;

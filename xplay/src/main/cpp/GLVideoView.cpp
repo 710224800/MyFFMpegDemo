@@ -20,7 +20,7 @@ void GLVideoView::render(XData data) {
     }
     if(txt == nullptr){
         txt = XTexture::create();
-        txt->init(view);
+        txt->init(view, (XType) data.format);
     }
     txt->draw(data.datas, data.width, data.height);
 }

@@ -53,7 +53,7 @@ Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring
     de->open(url); // 解封装器
 
     vdecode = new FFDecode();
-    vdecode->open(de->getVPara(), true); // 用硬件解码有点问题
+    vdecode->open(de->getVPara(), false); // 用硬件解码有点问题
     de->addObs(vdecode); // 为解封装器添加 视频解码器
 
     adecode = new FFDecode();

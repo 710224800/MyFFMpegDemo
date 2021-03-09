@@ -13,6 +13,8 @@ struct AVFrame;
 
 class FFDecode : public IDecode{
 public:
+    static void initHard(void *vm);
+
     virtual bool open(XParameter para, bool isHard = false);
 
     //future 模型，发送数据到线程解码

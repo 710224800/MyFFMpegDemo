@@ -43,6 +43,12 @@ public:
 TestObserver *testObs = nullptr;
 
 extern "C"
+JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *res){
+    FFDecode::initHard(vm);
+    return JNI_VERSION_1_4;
+}
+
+extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring url_) {
     std::string hello = "hello world c++";
@@ -53,7 +59,7 @@ Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring
     de->open(url); // 解封装器
 
     vdecode = new FFDecode();
-    vdecode->open(de->getVPara(), false); // 用硬件解码有点问题
+    vdecode->open(de->getVPara(), true); // 用硬件解码可以了
     de->addObs(vdecode); // 为解封装器添加 视频解码器
 
     adecode = new FFDecode();

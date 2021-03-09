@@ -7,6 +7,11 @@
 
 extern "C"{
 #include "libavcodec/avcodec.h"
+#include "libavcodec/jni.h"
+}
+
+void FFDecode::initHard(void *vm){
+    av_jni_set_java_vm(vm, nullptr);
 }
 
 bool FFDecode::open(XParameter para, bool isHard) {

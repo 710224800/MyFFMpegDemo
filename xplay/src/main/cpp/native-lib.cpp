@@ -26,6 +26,7 @@ Java_com_lyhao_xplay_NativeLib_getFFMpegConfig(JNIEnv *env, jobject thiz) {
 #include "FFResample.h"
 #include "IAudioPlay.h"
 #include "SLAudioPlay.h"
+#include "IPlayer.h"
 
 IDemux *de = nullptr;
 IDecode *vdecode = nullptr;
@@ -56,31 +57,39 @@ Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring
     if(de == nullptr){
         de = new FFDemux();
     }
-    de->open(url); // 解封装器
+//    de->open(url); // 解封装器
 
     vdecode = new FFDecode();
-    vdecode->open(de->getVPara(), true); // 用硬件解码可以了
+//    vdecode->open(de->getVPara(), true); // 用硬件解码可以了
     de->addObs(vdecode); // 为解封装器添加 视频解码器
 
     adecode = new FFDecode();
-    adecode->open(de->getAPara());
+//    adecode->open(de->getAPara());
     de->addObs(adecode); // 为解封装器添加 音频解码器
 
     view = new GLVideoView();
     vdecode->addObs(view); // 为视频解码器 添加显示窗口，openGl实现
 
     resample = new FFResample();
-    XParameter outPara = de->getAPara();
-    resample->open(de->getAPara(), outPara);
+//    XParameter outPara = de->getAPara();
+//    resample->open(de->getAPara(), outPara);
     adecode->addObs(resample); // 为音频解码器 添加重采样器，先这么叫
 
     audioPlay = new SLAudioPlay();
-    audioPlay->startPlay(outPara);
+//    audioPlay->startPlay(outPara);
     resample->addObs(audioPlay);
 
-    vdecode->start();
-    adecode->start();
-    de->start();
+//    vdecode->start();
+//    adecode->start();
+//    de->start();
+    IPlayer::get()->demux = de;
+    IPlayer::get()->adecode = adecode;
+    IPlayer::get()->vdecode = vdecode;
+    IPlayer::get()->videoView = view;
+    IPlayer::get()->resample = resample;
+    IPlayer::get()->audioPlay = audioPlay;
+
+    IPlayer::get()->open(url);
 //    XSleep(3000); // 这个方法会阻塞主线程
 //    de->stop();
     env->ReleaseStringUTFChars(url_, url);

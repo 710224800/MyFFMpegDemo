@@ -90,6 +90,7 @@ Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring
     IPlayer::get()->audioPlay = audioPlay;
 
     IPlayer::get()->open(url);
+    IPlayer::get()->startPlay();
 //    XSleep(3000); // 这个方法会阻塞主线程
 //    de->stop();
     env->ReleaseStringUTFChars(url_, url);
@@ -99,27 +100,32 @@ Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_lyhao_xplay_NativeLib_testStop(JNIEnv *env, jobject thiz) {
-    if(de != nullptr){
-        de->stop();
-        delete de;
+    if(IPlayer::get()->demux != nullptr){
+        IPlayer::get()->demux->stop();
+        delete IPlayer::get()->demux;
+        IPlayer::get()->demux = nullptr;
         de = nullptr;
     }
-    if(adecode != nullptr){
-        adecode->stop();
-        delete adecode;
+    if(IPlayer::get()->adecode != nullptr){
+        IPlayer::get()->adecode->stop();
+        delete IPlayer::get()->adecode;
+        IPlayer::get()->adecode = nullptr;
         adecode = nullptr;
     }
-    if(vdecode != nullptr){
-        vdecode->stop();
-        delete vdecode;
+    if(IPlayer::get()->vdecode != nullptr){
+        IPlayer::get()->vdecode->stop();
+        delete IPlayer::get()->vdecode;
+        IPlayer::get()->vdecode = nullptr;
         vdecode = nullptr;
     }
-    if(view != nullptr){
-        delete view;
+    if(IPlayer::get()->videoView != nullptr){
+        delete IPlayer::get()->videoView;
+        IPlayer::get()->videoView = nullptr;
         view = nullptr;
     }
-    if(resample != nullptr){
-        delete resample;
+    if(IPlayer::get()->resample != nullptr){
+        delete IPlayer::get()->resample;
+        IPlayer::get()->resample = nullptr;
         resample = nullptr;
     }
 }
@@ -129,7 +135,8 @@ JNIEXPORT void JNICALL
 Java_com_lyhao_xplay_NativeLib_initView(JNIEnv *env, jobject thiz, jobject surface) {
     // TODO: implement initView()
     ANativeWindow *win = ANativeWindow_fromSurface(env, surface);
-    view->setRender(win);
+//    view->setRender(win);
+    IPlayer::get()->initView(win);
 //    XEGL::get() -> init(win);
 //    XShader shader;
 //    shader.init();

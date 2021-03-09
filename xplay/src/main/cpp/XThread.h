@@ -9,7 +9,7 @@ void XSleep(int mis);
 
 class XThread {
 public:
-    virtual void start();
+    virtual bool start();
 
     virtual void stop();
     //入口主函数

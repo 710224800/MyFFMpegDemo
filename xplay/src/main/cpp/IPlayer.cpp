@@ -12,26 +12,26 @@ IPlayer * IPlayer::get(unsigned char index) {
 
 bool IPlayer::open(const char *path) {
     //解封装
-    if(demux == nullptr || !demux->open(path)){
+    if (demux == nullptr || !demux->open(path)) {
         XLOGE("demux->Open %s failed!", path);
         return false;
     }
     XParameter vPara = demux->getVPara();
     XParameter aPara = demux->getAPara();
     //解码 解码可能不需要，如果是解封之后就是原始数据
-    if(vdecode == nullptr || !vdecode->open(vPara, isHardDecode))
-    {
+    if (vdecode == nullptr || !vdecode->open(vPara, isHardDecode)) {
         XLOGE("vdecode->Open %s failed!", path);
         //return false;
     }
-    if(adecode == nullptr || !adecode->open(aPara))
-    {
+    if (adecode == nullptr || !adecode->open(aPara)) {
         XLOGE("adecode->Open %s failed!", path);
         //return false;
     }
 
     //重采样 有可能不需要，解码后或者解封后可能是直接能播放的数据
-    XParameter outPara = demux->getAPara();
+//    if (outPara.sample_rate <= 0) {
+        outPara = demux->getAPara();
+//    }
 
     if(resample == nullptr || !resample->open(aPara, outPara))
     {
@@ -41,5 +41,25 @@ bool IPlayer::open(const char *path) {
 }
 bool IPlayer::startPlay()
 {
+    if(demux == nullptr || !demux->start())
+    {
+        XLOGE("demux->Start failed!");
+        return false;
+    }
+    if(adecode != nullptr) {
+        adecode->start();
+    }
+    if(audioPlay != nullptr) {
+        audioPlay->startPlay(outPara);
+    }
+    if(vdecode != nullptr){
+        vdecode->start();
+    }
     return true;
+}
+
+void IPlayer::initView(void *win) {
+    if(videoView != nullptr){
+        videoView->setRender(win);
+    }
 }

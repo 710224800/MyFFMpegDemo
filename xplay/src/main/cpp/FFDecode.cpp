@@ -87,19 +87,19 @@ XData FFDecode::recvFrame() {
 //    XLOGI("avcodec_receive_frame success codecType=%d",avCodecContext->codec_type);
     XData xData;
     xData.data = (unsigned char*) avFrame;
+    xData.format = avFrame->format;
     if(avCodecContext->codec_type == AVMEDIA_TYPE_VIDEO){
         xData.isAudio = false;
         xData.size = (avFrame->linesize[0] + avFrame->linesize[1] + avFrame->linesize[2]) * avFrame->height;
         xData.width = avFrame->linesize[0]; // xData.width = avFrame->width; 有兼容性问题
         xData.height = avFrame->height;
-        XLOGE("xData.width=%d, height=%d" , xData.width, xData.height);
+        XLOGE("xData.width=%d, height=%d format=%d", xData.width, xData.height, xData.format);
         XLOGE("avFrame->linesize=%d,%d,%d" , avFrame->linesize[0], avFrame->linesize[1], avFrame->linesize[2]);
     } else {
         xData.isAudio = true;
         //样本字节数 ＊ 单通道样本数 ＊ 通道数
         xData.size = av_get_bytes_per_sample(((AVSampleFormat) avFrame->format)) * avFrame->nb_samples * avFrame->channels ; //avFrame->channels;
     }
-    xData.format = avFrame->format;
     memcpy(xData.datas, avFrame->data, sizeof(xData.datas));
     return xData;
 }

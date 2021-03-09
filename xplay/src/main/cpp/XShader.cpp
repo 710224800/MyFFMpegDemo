@@ -219,7 +219,7 @@ void XShader::draw()
 
 void XShader::getTexture(unsigned int index,int width,int height, unsigned char *buf, bool isa)
 {
-    XLOGI("getTexture texts[%d]= %d width=%d, height=%d", index, texts[index], width, height);
+    //XLOGI("getTexture texts[%d]= %d width=%d, height=%d", index, texts[index], width, height);
     unsigned int format = GL_LUMINANCE;
     if(isa){
         format = GL_LUMINANCE_ALPHA;

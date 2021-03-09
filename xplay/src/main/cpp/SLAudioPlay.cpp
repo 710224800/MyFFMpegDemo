@@ -39,10 +39,9 @@ void SLAudioPlay::playCall(void *bufq)
 {
     if(!bufq)return;
     SLAndroidSimpleBufferQueueItf bf = (SLAndroidSimpleBufferQueueItf)bufq;
-    XLOGE("SLAudioPlay::PlayCall");
     //阻塞
     XData d = getData();
-    XLOGE("getData size is %d", d.size);
+    //XLOGE("PlayCall getData size is %d", d.size);
     if(d.size <= 0){
         XLOGE("getData size is 0");
         return;

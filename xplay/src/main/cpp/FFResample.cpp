@@ -34,7 +34,7 @@ XData FFResample::resample(XData indata) {
         XLOGI("resample indata.data = null");
         return {};
     }
-    XLOGI("resample indata size is %d", indata.size);
+    //XLOGI("resample indata size is %d", indata.size);
     if(actx == nullptr){
         return {};
     }
@@ -43,7 +43,7 @@ XData FFResample::resample(XData indata) {
     //输出空间的分配
     XData out;
     int outsize = outChannels * frame->nb_samples * av_get_bytes_per_sample((AVSampleFormat)outFormat);
-    XLOGI("resample outsize is %d", outsize);
+    //XLOGI("resample outsize is %d", outsize);
     if(outsize <= 0){
         return {};
     }
@@ -55,6 +55,6 @@ XData FFResample::resample(XData indata) {
         out.Drop();
         return {};
     }
-    XLOGE("swr_convert success = %d", len);
+    //XLOGE("swr_convert success = %d", len);
     return out;
 }

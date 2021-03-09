@@ -21,7 +21,7 @@ XData IAudioPlay::getData() {
 }
 void IAudioPlay::update(XData data) {
     //压入缓冲队列
-    XLOGE("IAudioPlay::update data size is %d", data.size);
+    //XLOGE("IAudioPlay::update data size is %d", data.size);
     if(data.size <= 0 || data.data == nullptr){
         return;
     }

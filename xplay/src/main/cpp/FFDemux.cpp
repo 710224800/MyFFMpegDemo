@@ -86,7 +86,7 @@ XData FFDemux::read(){
         }
         return {};
     }
-    XLOGI("pack size is %d , pts is %lld", pkt->size, pkt->pts);
+    //XLOGI("pack size is %d , pts is %lld", pkt->size, pkt->pts);
     data.data = (unsigned char *) pkt;
     data.size = pkt->size;
     if(pkt->stream_index == audioStream){

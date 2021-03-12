@@ -18,13 +18,15 @@ Java_com_lyhao_xplay_NativeLib_getFFMpegConfig(JNIEnv *env, jobject thiz) {
 
 #include "IPlayer.h"
 #include "FFPlayerBuilder.h"
+#include "IPlayerPorxy.h"
 
 IPlayer *player = nullptr;
 
 extern "C"
 JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *res){
 //    FFDecode::initHard(vm);
-    FFPlayerBuilder::initHard(vm);
+//    FFPlayerBuilder::initHard(vm);
+    IPlayerPorxy::get()->init(vm);
     return JNI_VERSION_1_4;
 }
 
@@ -33,9 +35,11 @@ JNIEXPORT jstring JNICALL
 Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring url_) {
     std::string hello = "hello world c++";
     const char *url = env->GetStringUTFChars(url_, nullptr);
-    player = FFPlayerBuilder::get()->buildPlayer();
-    player->open(url);
-    player->startPlay();
+//    player = FFPlayerBuilder::get()->buildPlayer();
+//    player->open(url);
+//    player->startPlay();
+    IPlayerPorxy::get()->open(url);
+    IPlayerPorxy::get()->startPlay();
 
     env->ReleaseStringUTFChars(url_, url);
     return env->NewStringUTF(hello.c_str());
@@ -74,9 +78,10 @@ JNIEXPORT void JNICALL
 Java_com_lyhao_xplay_NativeLib_initView(JNIEnv *env, jobject thiz, jobject surface) {
     // TODO: implement initView()
     ANativeWindow *win = ANativeWindow_fromSurface(env, surface);
-    if(player != nullptr) {
-        player->initView(win);
-    }
+//    if(player != nullptr) {
+//        player->initView(win);
+//    }
+    IPlayerPorxy::get()->initView(win);
 //    XEGL::get() -> init(win);
 //    XShader shader;
 //    shader.init();

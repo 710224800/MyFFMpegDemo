@@ -40,3 +40,11 @@ void IPlayerPorxy::initView(void *win) {
     }
     mux.unlock();
 }
+void IPlayerPorxy::release() {
+    mux.lock();
+    if(player){
+        player->release();
+        delete player;
+        player = nullptr;
+    }
+}

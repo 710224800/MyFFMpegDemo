@@ -19,10 +19,11 @@ public:
     virtual bool open(const char *path);
     virtual bool startPlay();
     virtual void initView(void *win);
+    virtual void release();
 
 protected:
     IPlayerPorxy(){}
-    IPlayer *player = 0;
+    IPlayer *player = nullptr;
     std::mutex mux;
 
 };

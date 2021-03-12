@@ -48,29 +48,7 @@ Java_com_lyhao_xplay_NativeLib_testIDemuxOpen(JNIEnv *env, jobject thiz, jstring
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_lyhao_xplay_NativeLib_testStop(JNIEnv *env, jobject thiz) {
-    if(player->demux != nullptr){
-        player->demux->stop();
-        delete player->demux;
-        player->demux = nullptr;
-    }
-    if(player->adecode != nullptr){
-        player->adecode->stop();
-        delete player->adecode;
-        player->adecode = nullptr;
-    }
-    if(player->vdecode != nullptr){
-        player->vdecode->stop();
-        delete player->vdecode;
-        player->vdecode = nullptr;
-    }
-    if(player->videoView != nullptr){
-        delete player->videoView;
-        player->videoView = nullptr;
-    }
-    if(player->resample != nullptr){
-        delete player->resample;
-        player->resample = nullptr;
-    }
+    IPlayerPorxy::get()->release();
 }
 
 extern "C"

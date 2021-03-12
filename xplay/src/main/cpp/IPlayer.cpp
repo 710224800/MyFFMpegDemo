@@ -63,3 +63,33 @@ void IPlayer::initView(void *win) {
         videoView->setRender(win);
     }
 }
+
+void IPlayer::release() {
+    if(audioPlay){
+        delete audioPlay;
+        audioPlay = nullptr;
+    }
+    if(demux){
+        demux->stop();
+        delete demux;
+        demux = nullptr;
+    }
+    if(adecode){
+        adecode->stop();
+        delete adecode;
+        adecode = nullptr;
+    }
+    if(vdecode){
+        vdecode->stop();
+        delete vdecode;
+        vdecode = nullptr;
+    }
+    if(videoView){
+        delete videoView;
+        videoView = nullptr;
+    }
+    if(resample){
+        delete resample;
+        resample = nullptr;
+    }
+}

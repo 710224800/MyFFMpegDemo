@@ -19,6 +19,7 @@ public:
     virtual bool open(const char *path);
     virtual bool startPlay();
     virtual void initView(void *win);
+    virtual void release();
 
     bool isHardDecode = true;
 

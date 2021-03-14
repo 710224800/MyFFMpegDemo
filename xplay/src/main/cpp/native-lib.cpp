@@ -3,13 +3,16 @@
 #include <android/native_window_jni.h>
 #include "XLog.h"
 extern "C"{
-#include <libavcodec/avcodec.h>
+#include "libavcodec/avcodec.h"
+#include "libavutil/ffversion.h"
 }
 
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_lyhao_xplay_NativeLib_getFFMpegConfig(JNIEnv *env, jobject thiz) {
-    std::string hello = "avcodec_configuration() = \n";
+    std::string hello = FFMPEG_VERSION;
+    hello += "\n";
+    hello += "avcodec_configuration() = \n";
     hello += avcodec_configuration();
     const char * c_str = hello.c_str();
     XLOGD("getFFMpegConfig %s", c_str);

@@ -5,7 +5,6 @@
 #ifndef XPLAY_IDEMUX_H
 #define XPLAY_IDEMUX_H
 
-#include <time64.h>
 #include "XData.h"
 #include "IObserver.h"
 #include "XParameter.h"
@@ -26,7 +25,7 @@ public:
     virtual XData read() = 0; //纯虚函数
 
     //总时长（毫秒）
-    int64_t totalMs = 0;
+    unsigned long totalMs = 0;
 protected:
     virtual void main();
 };

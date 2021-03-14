@@ -6,12 +6,13 @@
 
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "native-lib", __VA_ARGS__)
 extern "C"{
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
-#include <libavutil/time.h>
-#include <libavcodec/jni.h>
-#include <libswscale/swscale.h>
-#include <libswresample/swresample.h>
+#include "libavcodec/avcodec.h"
+#include "libavformat/avformat.h"
+#include "libavutil/time.h"
+#include "libavcodec/jni.h"
+#include "libswscale/swscale.h"
+#include "libswresample/swresample.h"
+#include "libavutil/ffversion.h"
 }
 
 extern "C" JNIEXPORT jint
@@ -33,7 +34,9 @@ extern "C" JNIEXPORT jstring JNICALL
 Java_com_example_myffdemo_NativeLib_getFFMpegConfiguration(
         JNIEnv* env,
         jobject /* this */) {
-    std::string hello = "avcodec_configuration() = \n";
+    std::string hello = FFMPEG_VERSION;
+    hello += "\n";
+    hello += "avcodec_configuration() = \n";
     hello += avcodec_configuration();
     return env->NewStringUTF(hello.c_str());
 }

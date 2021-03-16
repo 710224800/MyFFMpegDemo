@@ -31,6 +31,16 @@ void IDecode::main() {
     while (!isExit){
 //        XLOGI("running isAudio=%d", isAudio);
         packsMutex.lock();
+
+        //判断音视频同步
+        if(!isAudio && synPts > 0){
+            if(synPts < pts){
+                packsMutex.unlock();
+                XSleep(1);
+                continue;
+            }
+        }
+
         if(packs.empty()){
             packsMutex.unlock();
             XSleep(1);
@@ -47,6 +57,7 @@ void IDecode::main() {
                 if(frame.data == nullptr){
                     break;
                 }
+                pts = frame.pts;
 //                XLOGI("notify frame %d", frame.isAudio);
                 this->notify(frame);
             }

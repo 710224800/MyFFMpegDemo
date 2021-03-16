@@ -87,7 +87,7 @@ XData FFDecode::recvFrame() {
 //    XLOGI("avcodec_receive_frame success codecType=%d",avCodecContext->codec_type);
     XData xData;
     xData.data = (unsigned char*) avFrame;
-    xData.format = avFrame->format;
+    xData.format = avFrame->format; //编码格式 YUV420 NV12 NV21
     if(avCodecContext->codec_type == AVMEDIA_TYPE_VIDEO){
         xData.isAudio = false;
         xData.size = (avFrame->linesize[0] + avFrame->linesize[1] + avFrame->linesize[2]) * avFrame->height;
@@ -101,5 +101,6 @@ XData FFDecode::recvFrame() {
         xData.size = av_get_bytes_per_sample(((AVSampleFormat) avFrame->format)) * avFrame->nb_samples * avFrame->channels ; //avFrame->channels;
     }
     memcpy(xData.datas, avFrame->data, sizeof(xData.datas));
+    xData.pts = avFrame->pts;
     return xData;
 }

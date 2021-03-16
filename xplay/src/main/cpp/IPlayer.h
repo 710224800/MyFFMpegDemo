@@ -35,6 +35,10 @@ public:
 
 protected:
     IPlayer(){};
+
+    //用作音频同步
+    void main();
+    std::mutex mux;
 };
 
 

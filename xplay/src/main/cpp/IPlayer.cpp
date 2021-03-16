@@ -10,6 +10,25 @@ IPlayer * IPlayer::get(unsigned char index) {
     return &iPlayer[index];
 }
 
+void IPlayer::main() {
+    while (!isExit){
+        mux.lock();
+        if(!audioPlay || !vdecode){
+            mux.unlock();
+            XSleep(2);
+            continue;
+        }
+        //同步
+        //获取音频的pts,告诉视频
+        int apts = audioPlay->pts;
+        XLOGE("apts = %d", apts);
+        vdecode->synPts = apts;
+
+        mux.unlock();
+        XSleep(2);
+    }
+}
+
 bool IPlayer::open(const char *path) {
     //解封装
     if (demux == nullptr || !demux->open(path)) {
@@ -55,6 +74,7 @@ bool IPlayer::startPlay()
     if(vdecode != nullptr){
         vdecode->start();
     }
+    XThread::start();
     return true;
 }
 

@@ -5,6 +5,10 @@ extern "C"{
 #include <libavformat/avformat.h>
 }
 
+static double r2d(AVRational r){
+    return r.num == 0 || r.den == 0 ? 0. : (double) r.num / (double) r.den;
+}
+
 //打开文件，或者流媒体
 bool FFDemux::open(const char *url){
     XLOGI("open file %s begin", url);
@@ -86,7 +90,7 @@ XData FFDemux::read(){
         }
         return {};
     }
-    //XLOGI("pack size is %d , pts is %lld", pkt->size, pkt->pts);
+    XLOGI("pack size is %d , pts is %lld", pkt->size, pkt->pts);
     data.data = (unsigned char *) pkt;
     data.size = pkt->size;
     if(pkt->stream_index == audioStream){
@@ -97,6 +101,11 @@ XData FFDemux::read(){
         av_packet_free(&pkt);
         return {};
     }
+
+    //转换pts
+    pkt->pts = pkt->pts * (1000 * r2d(avFormatContext->streams[pkt->stream_index]->time_base));
+    pkt->dts = pkt->dts * (1000 * r2d(avFormatContext->streams[pkt->stream_index]->time_base));
+    data.pts = (int) pkt->pts;
     return data;
 }
 static bool isFirst = true;

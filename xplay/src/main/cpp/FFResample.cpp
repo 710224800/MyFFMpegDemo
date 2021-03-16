@@ -34,7 +34,7 @@ XData FFResample::resample(XData indata) {
         XLOGI("resample indata.data = null");
         return {};
     }
-    //XLOGI("resample indata size is %d", indata.size);
+    XLOGI("resample indata pts is %d", indata.pts);
     if(actx == nullptr){
         return {};
     }
@@ -55,6 +55,7 @@ XData FFResample::resample(XData indata) {
         out.Drop();
         return {};
     }
+    out.pts = indata.pts;
     //XLOGE("swr_convert success = %d", len);
     return out;
 }

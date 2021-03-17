@@ -3,7 +3,7 @@ apply from: "config.gradle"
 buildscript {
     repositories {
         mavenCentral()
-//        jcenter()
+        jcenter() { url 'https://maven.aliyun.com/repository/jcenter' }
         google()
         maven{ url'http://maven.aliyun.com/nexus/content/groups/public/' }
         maven{ url'http://maven.aliyun.com/nexus/content/repositories/jcenter'}
@@ -19,7 +19,7 @@ buildscript {
 allprojects {
     repositories {
         mavenCentral()
-//        jcenter()
+        jcenter() { url 'https://maven.aliyun.com/repository/jcenter' }
         google()
         maven{ url'http://maven.aliyun.com/nexus/content/groups/public/' }
         maven{ url'http://maven.aliyun.com/nexus/content/repositories/jcenter'}

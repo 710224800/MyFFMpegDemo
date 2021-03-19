@@ -50,7 +50,9 @@ void SLAudioPlay::playCall(void *bufq)
         return;
     }
     memcpy(buf, d.data, d.size);
+    mux.lock();
     (*bf) -> Enqueue(bf, buf, d.size);
+    mux.unlock();
     d.Drop();
 }
 
@@ -64,10 +66,42 @@ static void PcmCall(SLAndroidSimpleBufferQueueItf bf,void *contex)
     }
     ap->playCall((void *)bf);
 }
+void SLAudioPlay::close()
+{
+    mux.lock();
+    //停止播放
+    if(iplayer && (*iplayer))
+    {
+        (*iplayer)->SetPlayState(iplayer,SL_PLAYSTATE_STOPPED);
+    }
+    //清理播放队列
+    if(pcmQue && (*pcmQue))
+    {
+        (*pcmQue)->Clear(pcmQue);
+    }
+    //销毁player对象
+    if(player && (*player))
+    {
+        (*player)->Destroy(player);
+    }
+    //销毁混音器
+    if(mix && (*mix))
+    {
+        (*mix)->Destroy(mix);
+    }
 
+    //销毁播放引擎
+    if(engineSL && (*engineSL))
+    {
+        (*engineSL)->Destroy(engineSL);
+    }
+
+    mux.unlock();
+}
 bool SLAudioPlay::startPlay(XParameter out)
 {
-
+    close();
+    mux.lock();
     //1 创建引擎
     eng = CreateSL();
     if(eng)
@@ -77,6 +111,7 @@ bool SLAudioPlay::startPlay(XParameter out)
     else
     {
         XLOGE("CreateSL failed！ ");
+        mux.unlock();
         return false;
     }
 
@@ -87,12 +122,14 @@ bool SLAudioPlay::startPlay(XParameter out)
     if(re !=SL_RESULT_SUCCESS )
     {
         XLOGE("SL_RESULT_SUCCESS failed!");
+        mux.unlock();
         return false;
     }
     re = (*mix)->Realize(mix,SL_BOOLEAN_FALSE);
     if(re !=SL_RESULT_SUCCESS )
     {
         XLOGE("(*mix)->Realize failed!");
+        mux.unlock();
         return false;
     }
     SLDataLocator_OutputMix outmix = {SL_DATALOCATOR_OUTPUTMIX,mix};
@@ -121,6 +158,7 @@ bool SLAudioPlay::startPlay(XParameter out)
     if(re !=SL_RESULT_SUCCESS )
     {
         XLOGE("CreateAudioPlayer failed!");
+        mux.unlock();
         return false;
     } else{
         XLOGI("CreateAudioPlayer success!");
@@ -131,12 +169,14 @@ bool SLAudioPlay::startPlay(XParameter out)
     if(re !=SL_RESULT_SUCCESS )
     {
         XLOGE("GetInterface SL_IID_PLAY failed!");
+        mux.unlock();
         return false;
     }
     re = (*player)->GetInterface(player,SL_IID_BUFFERQUEUE,&pcmQue);
     if(re !=SL_RESULT_SUCCESS )
     {
         XLOGE("GetInterface SL_IID_BUFFERQUEUE failed!");
+        mux.unlock();
         return false;
     }
 
@@ -149,5 +189,6 @@ bool SLAudioPlay::startPlay(XParameter out)
     //启动队列回调
     (*pcmQue)->Enqueue(pcmQue,"",1);
     XLOGI("SLAudioPlay::StartPlay success!");
+    mux.unlock();
     return true;
 }

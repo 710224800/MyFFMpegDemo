@@ -26,7 +26,7 @@ public:
 protected:
     AVCodecContext *avCodecContext = nullptr;
     AVFrame *avFrame = nullptr;
-    std::mutex mux;
+    std::mutex ffdecode_mux;
 };
 
 

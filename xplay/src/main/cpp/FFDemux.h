@@ -27,7 +27,7 @@ public:
 
 private:
     AVFormatContext *avFormatContext = nullptr;
-    std::mutex mux;
+    std::mutex ffdemux_mux;
     int audioStream = 1;
     int videoStream = 0;
 };

@@ -19,6 +19,7 @@ public:
     virtual XData getData();
 
     virtual bool startPlay(XParameter out) = 0;
+    virtual void close() = 0;
 
     int maxFrame = 100;
     int pts = 0;

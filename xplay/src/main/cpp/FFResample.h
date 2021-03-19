@@ -16,7 +16,7 @@ public:
 
 protected:
     SwrContext *actx = nullptr;
-    std::mutex mux;
+    std::mutex ffresample_mux;
 };
 
 

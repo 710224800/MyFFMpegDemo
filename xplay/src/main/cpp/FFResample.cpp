@@ -8,16 +8,16 @@ extern "C"{
 #include "FFResample.h"
 #include "XLog.h"
 void FFResample::close() {
-    mux.lock();
+    ffresample_mux.lock();
     if(actx){
         swr_free(&actx);
     }
-    mux.unlock();
+    ffresample_mux.unlock();
 }
 
 bool FFResample::open(XParameter in, XParameter out) {
     close();
-    mux.lock();
+    ffresample_mux.lock();
     //音频重采样上下文初始化
     actx = swr_alloc();
     actx = swr_alloc_set_opts(actx,
@@ -29,14 +29,14 @@ bool FFResample::open(XParameter in, XParameter out) {
     int re = swr_init(actx);
     if(re != 0){
         XLOGE("swr_init failed!");
-        mux.unlock();
+        ffresample_mux.unlock();
         return false;
     } else {
         XLOGI("swr_init success!");
     }
     outChannels = in.para->channels;
     outFormat = AV_SAMPLE_FMT_S16;
-    mux.unlock();
+    ffresample_mux.unlock();
     return true;
 }
 
@@ -46,9 +46,9 @@ XData FFResample::resample(XData indata) {
         return {};
     }
     XLOGI("resample indata pts is %d", indata.pts);
-    mux.lock();
+    ffresample_mux.lock();
     if(actx == nullptr){
-        mux.unlock();
+        ffresample_mux.unlock();
         return {};
     }
     AVFrame *frame = (AVFrame*) indata.data;
@@ -58,7 +58,7 @@ XData FFResample::resample(XData indata) {
     int outsize = outChannels * frame->nb_samples * av_get_bytes_per_sample((AVSampleFormat)outFormat);
     //XLOGI("resample outsize is %d", outsize);
     if(outsize <= 0){
-        mux.unlock();
+        ffresample_mux.unlock();
         return {};
     }
     out.Alloc(outsize);
@@ -67,11 +67,11 @@ XData FFResample::resample(XData indata) {
     int len = swr_convert(actx, outArr, frame->nb_samples, (const uint8_t **)frame->data, frame->nb_samples);
     if(len <= 0){
         out.Drop();
-        mux.unlock();
+        ffresample_mux.unlock();
         return {};
     }
     out.pts = indata.pts;
     //XLOGE("swr_convert success = %d", len);
-    mux.unlock();
+    ffresample_mux.unlock();
     return out;
 }

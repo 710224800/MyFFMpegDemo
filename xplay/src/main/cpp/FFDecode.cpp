@@ -14,7 +14,7 @@ void FFDecode::initHard(void *vm){
     av_jni_set_java_vm(vm, nullptr);
 }
 void FFDecode::close() {
-    mux.lock();
+    ffdecode_mux.lock();
     if(avFrame){
         av_frame_free(&avFrame);
     }
@@ -22,7 +22,7 @@ void FFDecode::close() {
         avcodec_close(avCodecContext);
         avcodec_free_context(&avCodecContext);
     }
-    mux.unlock();
+    ffdecode_mux.unlock();
 }
 bool FFDecode::open(XParameter para, bool isHard) {
     close();
@@ -42,7 +42,7 @@ bool FFDecode::open(XParameter para, bool isHard) {
         return false;
     }
     XLOGE("avcodec_find_decoder %d success , isHand = %d", p->codec_id, isHard);
-    mux.lock();
+    ffdecode_mux.lock();
     // 创建解码上下文，并复制参数
     avCodecContext = avcodec_alloc_context3(cd);
     avcodec_parameters_to_context(avCodecContext, p);
@@ -55,13 +55,13 @@ bool FFDecode::open(XParameter para, bool isHard) {
         char buf[1024] = {0};
         av_strerror(re,buf,sizeof(buf)-1);
         XLOGE("avcodec_open2 failed = %s",buf);
-        mux.unlock();
+        ffdecode_mux.unlock();
         return false;
     }
     XLOGD("codec_type=%d", avCodecContext->codec_type);
     this->isAudio = !(AVMEDIA_TYPE_VIDEO == avCodecContext->codec_type);
     XLOGI("avcodec_open2 success!");
-    mux.unlock();
+    ffdecode_mux.unlock();
     return true;
 }
 
@@ -70,14 +70,14 @@ bool FFDecode::sendPacket(XData pkt) {
     if(pkt.size <= 0 || pkt.data == nullptr){
         return false;
     }
-    mux.lock();
+    ffdecode_mux.lock();
     if(avCodecContext == nullptr){
         XLOGE("avCodecContext == nullptr");
-        mux.unlock();
+        ffdecode_mux.unlock();
         return false;
     }
     int re = avcodec_send_packet(avCodecContext, (AVPacket*)pkt.data);
-    mux.unlock();
+    ffdecode_mux.unlock();
     if(re != 0){
         XLOGE("avcodec_send_packet failed");
         return false;
@@ -87,10 +87,10 @@ bool FFDecode::sendPacket(XData pkt) {
 
 //从线程中读取解码结果
 XData FFDecode::recvFrame() {
-    mux.lock();
+    ffdecode_mux.lock();
     if(avCodecContext == nullptr){
         XLOGE("avCodecContext == nullptr");
-        mux.unlock();
+        ffdecode_mux.unlock();
         return {};
     }
     if(avFrame == nullptr){
@@ -101,7 +101,7 @@ XData FFDecode::recvFrame() {
         char buf[1024] = {0};
         av_strerror(re,buf,sizeof(buf)-1);
         XLOGE("avcodec_receive_frame failed codecType=%d = %s",avCodecContext->codec_type, buf);
-        mux.unlock();
+        ffdecode_mux.unlock();
         return {};
     }
 //    XLOGI("avcodec_receive_frame success codecType=%d",avCodecContext->codec_type);
@@ -122,6 +122,6 @@ XData FFDecode::recvFrame() {
     }
     memcpy(xData.datas, avFrame->data, sizeof(xData.datas));
     xData.pts = avFrame->pts;
-    mux.unlock();
+    ffdecode_mux.unlock();
     return xData;
 }

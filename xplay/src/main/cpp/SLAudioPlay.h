@@ -19,6 +19,7 @@ public:
 
 protected:
     unsigned char *buf = nullptr;
+    std::mutex slAudioPlay_mux;
 };
 
 

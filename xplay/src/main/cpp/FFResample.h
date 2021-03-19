@@ -11,10 +11,12 @@ struct SwrContext;
 class FFResample : public IResample{
 public:
     virtual bool open(XParameter in, XParameter out = XParameter());
+    virtual void close();
     virtual XData resample(XData indata);
 
 protected:
     SwrContext *actx = nullptr;
+    std::mutex mux;
 };
 
 

@@ -16,7 +16,7 @@ public:
     static void initHard(void *vm);
 
     virtual bool open(XParameter para, bool isHard = false);
-
+    virtual void close();
     //future 模型，发送数据到线程解码
     virtual bool sendPacket(XData pkt);
 
@@ -26,6 +26,7 @@ public:
 protected:
     AVCodecContext *avCodecContext = nullptr;
     AVFrame *avFrame = nullptr;
+    std::mutex mux;
 };
 
 

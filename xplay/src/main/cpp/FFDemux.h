@@ -12,6 +12,7 @@ class FFDemux : public IDemux {
 public:
     //打开文件，或者流媒体
     virtual bool open(const char *url);
+    virtual void close();
 
     //获取视频参数
     virtual XParameter getVPara();
@@ -26,6 +27,7 @@ public:
 
 private:
     AVFormatContext *avFormatContext = nullptr;
+    std::mutex mux;
     int audioStream = 1;
     int videoStream = 0;
 };

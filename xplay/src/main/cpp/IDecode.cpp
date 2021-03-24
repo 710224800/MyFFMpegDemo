@@ -27,6 +27,17 @@ void IDecode::update(XData pkt) {
     }
 }
 
+void IDecode::clear() {
+    packsMutex.lock();
+    while (!packs.empty()){
+        packs.front().Drop();
+        packs.pop_front();
+    }
+    pts = 0;
+    synPts = 0;
+    packsMutex.unlock();
+}
+
 void IDecode::main() {
     while (!isExit){
 //        XLOGI("running isAudio=%d", isAudio);

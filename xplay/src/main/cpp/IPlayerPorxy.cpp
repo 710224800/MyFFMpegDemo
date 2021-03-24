@@ -10,14 +10,14 @@ void IPlayerPorxy::init(void *vm) {
     if(vm){
         FFPlayerBuilder::initHard(vm);
     }
-    if(!player){
-        player = FFPlayerBuilder::get()->buildPlayer();
-    }
     mux.unlock();
 }
 bool IPlayerPorxy::open(const char *path) {
     bool re = false;
     mux.lock();
+    if(!player){
+        player = FFPlayerBuilder::get()->buildPlayer();
+    }
     if(player){
         re = player->open(path);
     }

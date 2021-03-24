@@ -17,6 +17,7 @@ class IPlayer : public XThread{
 public:
     static IPlayer *get(unsigned char index = 0);
     virtual bool open(const char *path);
+    virtual void close();
     virtual bool startPlay();
     virtual void initView(void *win);
     virtual void release();

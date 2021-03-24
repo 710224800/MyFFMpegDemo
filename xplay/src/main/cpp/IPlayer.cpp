@@ -29,9 +29,48 @@ void IPlayer::main() {
     }
 }
 
+void IPlayer::close()
+{
+    mux.lock();
+    //2 先关闭主体线程，再清理观察者
+    //同步线程
+    XThread::stop();
+    //解封装
+    if(demux)
+        demux->stop();
+    //解码
+    if(vdecode)
+        vdecode->stop();
+    if(adecode)
+        adecode->stop();
+    //2 清理缓冲队列
+    if(vdecode)
+        vdecode->clear();
+    if(adecode)
+        adecode->clear();
+    if(audioPlay)
+        audioPlay->clear();
+
+    //3 清理资源
+    if(audioPlay)
+        audioPlay->close();
+    if(videoView)
+        videoView->close();
+    if(vdecode)
+        vdecode->close();
+    if(adecode)
+        adecode->close();
+    if(demux)
+        demux->close();
+    mux.unlock();
+}
+
 bool IPlayer::open(const char *path) {
+    close();
+    mux.lock();
     //解封装
     if (demux == nullptr || !demux->open(path)) {
+        mux.unlock();
         XLOGE("demux->Open %s failed!", path);
         return false;
     }
@@ -56,12 +95,15 @@ bool IPlayer::open(const char *path) {
     {
         XLOGE("resample->Open %s failed!", path);
     }
+    mux.unlock();
     return true;
 }
 bool IPlayer::startPlay()
 {
+    mux.lock();
     if(demux == nullptr || !demux->start())
     {
+        mux.unlock();
         XLOGE("demux->Start failed!");
         return false;
     }
@@ -75,6 +117,7 @@ bool IPlayer::startPlay()
         vdecode->start();
     }
     XThread::start();
+    mux.unlock();
     return true;
 }
 

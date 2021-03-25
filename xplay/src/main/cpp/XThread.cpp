@@ -13,6 +13,19 @@ void XSleep(int mis){
     this_thread::sleep_for(du);
 }
 
+void XThread::setPause(bool isP) {
+    isPause = isP;
+    //等待100毫秒
+    for(int i = 0; i < 10; i++)
+    {
+        if(isPausing == isP)
+        {
+            break;
+        }
+        XSleep(10);
+    }
+}
+
 bool XThread::start() {
     isExit = false;
     thread th(&XThread::threadMain, this);

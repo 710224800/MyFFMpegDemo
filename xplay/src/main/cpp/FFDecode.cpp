@@ -13,6 +13,14 @@ extern "C"{
 void FFDecode::initHard(void *vm){
     av_jni_set_java_vm(vm, nullptr);
 }
+void FFDecode::clear() {
+    IDecode::clear();
+    ffdecode_mux.lock();
+    if(avCodecContext){
+        avcodec_flush_buffers(avCodecContext);
+    }
+    ffdecode_mux.unlock();
+}
 void FFDecode::close() {
     IDecode::clear();
     ffdecode_mux.lock();
@@ -101,7 +109,7 @@ XData FFDecode::recvFrame() {
     if(re != 0){
         char buf[1024] = {0};
         av_strerror(re,buf,sizeof(buf)-1);
-        XLOGE("avcodec_receive_frame failed codecType=%d = %s",avCodecContext->codec_type, buf);
+        //XLOGE("avcodec_receive_frame failed codecType=%d = %s",avCodecContext->codec_type, buf);
         ffdecode_mux.unlock();
         return {};
     }
@@ -114,8 +122,8 @@ XData FFDecode::recvFrame() {
         xData.size = (avFrame->linesize[0] + avFrame->linesize[1] + avFrame->linesize[2]) * avFrame->height;
         xData.width = avFrame->linesize[0]; // xData.width = avFrame->width; 有兼容性问题
         xData.height = avFrame->height;
-        XLOGE("xData.width=%d, height=%d format=%d", xData.width, xData.height, xData.format);
-        XLOGE("avFrame->linesize=%d,%d,%d" , avFrame->linesize[0], avFrame->linesize[1], avFrame->linesize[2]);
+        //XLOGE("xData.width=%d, height=%d format=%d pts = %d", xData.width, xData.height, xData.format, avFrame->pts);
+        //XLOGE("avFrame->linesize=%d,%d,%d" , avFrame->linesize[0], avFrame->linesize[1], avFrame->linesize[2]);
     } else {
         xData.isAudio = true;
         //样本字节数 ＊ 单通道样本数 ＊ 通道数

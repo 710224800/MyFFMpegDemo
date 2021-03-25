@@ -21,7 +21,7 @@ void IDecode::update(XData pkt) {
             packsMutex.unlock();
             break;
         }
-        XLOGI("packs.size = %d isAudio=%d", packs.size(), isAudio);
+        //XLOGI("packs.size = %d isAudio=%d", packs.size(), isAudio);
         packsMutex.unlock();
         XSleep(1);
     }
@@ -60,7 +60,7 @@ void IDecode::main() {
         //消费者
         XData pkt = packs.front();
         packs.pop_front();
-
+        //XLOGI("sendPacket isAudio=%d pts=%d", pkt.isAudio, pkt.pts);
         if(this->sendPacket(pkt)){
             while (!isExit){
                 XData frame = recvFrame();
@@ -69,6 +69,7 @@ void IDecode::main() {
                     break;
                 }
                 pts = frame.pts;
+                //XLOGI("recvFrame isAudio=%d pts=%d", pkt.isAudio, frame.pts);
 //                XLOGI("notify frame %d", frame.isAudio);
                 this->notify(frame);
             }

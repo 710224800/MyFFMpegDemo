@@ -4,11 +4,49 @@
 
 #include "IPlayerPorxy.h"
 #include "FFPlayerBuilder.h"
-
+void IPlayerPorxy::close() {
+    mux.lock();
+    if(player){
+        player->close();
+    }
+    mux.unlock();
+}
 void IPlayerPorxy::init(void *vm) {
     mux.lock();
     if(vm){
         FFPlayerBuilder::initHard(vm);
+    }
+    mux.unlock();
+}
+double IPlayerPorxy::playPos() {
+    double pos = 0.0;
+    mux.lock();
+    if(player){
+        pos = player->playPos();
+    }
+    mux.unlock();
+}
+bool IPlayerPorxy::isPause() {
+    bool re = false;
+    mux.lock();
+    if(player){
+        re = player->IsPause();
+    }
+    mux.unlock();
+    return re;
+}
+void IPlayerPorxy::setPause(bool isP) {
+    mux.lock();
+    if(player){
+        player->setPause(isP);
+    }
+    mux.unlock();
+}
+bool IPlayerPorxy::seek(double pos) {
+    bool re = false;
+    mux.lock();
+    if(player){
+        re = player->seek(pos);
     }
     mux.unlock();
 }

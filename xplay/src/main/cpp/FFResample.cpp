@@ -45,7 +45,7 @@ XData FFResample::resample(XData indata) {
         XLOGI("resample indata.data = null");
         return {};
     }
-    XLOGI("resample indata pts is %d", indata.pts);
+    //XLOGI("resample indata pts is %d", indata.pts);
     ffresample_mux.lock();
     if(actx == nullptr){
         ffresample_mux.unlock();

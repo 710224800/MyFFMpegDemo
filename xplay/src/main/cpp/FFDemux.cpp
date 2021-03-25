@@ -15,7 +15,27 @@ void FFDemux::close() {
     }
     ffdemux_mux.unlock();
 }
+bool FFDemux::seek(double pos) {
+    if(pos<0 || pos>0){
+        XLOGE("seek value must 0.0-1.0");
+        return false;
+    }
+    bool re = false;
+    ffdemux_mux.lock();
+    if(!avFormatContext){
+        ffdemux_mux.unlock();
+        return false;
+    }
+    //清理读取的缓冲
+    avformat_flush(avFormatContext);
+    long long seekPts = 0;
+    seekPts = avFormatContext->streams[videoStream]->duration * pos;
 
+    //往后跳转到关键帧
+    re = av_seek_frame(avFormatContext, videoStream, seekPts, AVSEEK_FLAG_FRAME | AVSEEK_FLAG_BACKWARD);
+    ffdemux_mux.unlock();
+    return re;
+}
 //打开文件，或者流媒体
 bool FFDemux::open(const char *url){
     XLOGI("open file %s begin", url);
@@ -114,7 +134,6 @@ XData FFDemux::read(){
         ffdemux_mux.unlock();
         return {};
     }
-    XLOGI("pack size is %d , pts is %lld", pkt->size, pkt->pts);
     data.data = (unsigned char *) pkt;
     data.size = pkt->size;
     if(pkt->stream_index == audioStream){
@@ -126,12 +145,18 @@ XData FFDemux::read(){
         ffdemux_mux.unlock();
         return {};
     }
+    if (!data.isAudio) {
+        XLOGI("isAudio= %d pack size is %d , pts is %lld", data.isAudio, pkt->size, pkt->pts);
+    }
 
-    //转换pts
+    //转换pts 为毫秒
     pkt->pts = pkt->pts * (1000 * r2d(avFormatContext->streams[pkt->stream_index]->time_base));
     pkt->dts = pkt->dts * (1000 * r2d(avFormatContext->streams[pkt->stream_index]->time_base));
     data.pts = (int) pkt->pts;
     ffdemux_mux.unlock();
+    if (!data.isAudio) {
+        XLOGI("isAudio= %d pack size is %d , pts2 is %lld", data.isAudio, pkt->size, pkt->pts);
+    }
     return data;
 }
 static bool isFirst = true;

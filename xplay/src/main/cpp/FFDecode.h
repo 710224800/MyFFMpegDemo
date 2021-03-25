@@ -17,6 +17,7 @@ public:
 
     virtual bool open(XParameter para, bool isHard = false);
     virtual void close();
+    virtual void clear();
     //future 模型，发送数据到线程解码
     virtual bool sendPacket(XData pkt);
 

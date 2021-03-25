@@ -39,7 +39,7 @@ void IAudioPlay::update(XData data) {
     while (!isExit){
         framesMutex.lock();
         if(frames.size() > maxFrame){
-            XLOGE("IAudioPlay::frames.size() > %d", maxFrame);
+            //XLOGE("IAudioPlay::frames.size() > %d", maxFrame);
             framesMutex.unlock();
             XSleep(1);
             continue;

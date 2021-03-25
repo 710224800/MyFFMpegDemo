@@ -12,6 +12,8 @@ class FFDemux : public IDemux {
 public:
     //打开文件，或者流媒体
     virtual bool open(const char *url);
+    // seek pos 0.0 - 1.0
+    virtual bool seek(double pos);
     virtual void close();
 
     //获取视频参数

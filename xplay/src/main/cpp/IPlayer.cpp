@@ -21,7 +21,7 @@ void IPlayer::main() {
         //同步
         //获取音频的pts,告诉视频
         int apts = audioPlay->pts;
-        XLOGE("apts = %d", apts);
+        //XLOGE("apts = %d", apts);
         vdecode->synPts = apts;
 
         mux.unlock();
@@ -36,13 +36,13 @@ void IPlayer::close()
     //同步线程
     XThread::stop();
     //解封装
-    if(demux)
-        demux->stop();
-    //解码
-    if(vdecode)
-        vdecode->stop();
-    if(adecode)
-        adecode->stop();
+//    if(demux)
+//        demux->stop();
+//    //解码
+//    if(vdecode)
+//        vdecode->stop();
+//    if(adecode)
+//        adecode->stop();
     //2 清理缓冲队列
     if(vdecode)
         vdecode->clear();
@@ -64,7 +64,89 @@ void IPlayer::close()
         demux->close();
     mux.unlock();
 }
+double IPlayer::playPos() {
+    double pos = 0.0;
+    mux.lock();
+    int total = 0;
+    if(demux){
+        total = demux->totalMs;
+    }
+    if(total > 0){
+        if(vdecode){
+            pos = (double)vdecode->pts/(double)total;
+        }
+    }
+    mux.unlock();
+    return pos;
+}
+void IPlayer::setPause(bool isP) {
+    mux.lock();
+    XThread::setPause(isP);
+    if(demux){
+        demux->setPause(isP);
+    }
+    if(vdecode){
+        vdecode->setPause(isP);
+    }
+    if(adecode){
+        adecode->setPause(isP);
+    }
+    if(audioPlay){
+        audioPlay->setPause(isP);
+    }
+    mux.unlock();
+}
+bool IPlayer::seek(double pos) {
+    bool re = false;
+    if(!demux){
+        return false;
+    }
+    //暂停所有线程
+    setPause(true);
+    mux.lock();
+    //清理缓冲
+    //清理缓冲队列
+    if(vdecode){
+        vdecode->clear();
+    }
+    if(adecode){
+        adecode->clear();
+    }
+    if(audioPlay){
+        audioPlay->clear();
+    }
 
+    re = demux->seek(pos);
+    if(!vdecode){
+        mux.unlock();
+        setPause(false);
+        return re;
+    }
+    //解码到实际需要显示的帧
+    int seekPts = pos * demux->totalMs;
+    while(!isExit){
+        XData pkt = demux->read();
+        if(pkt.size <= 0) break;
+        if(pkt.isAudio){
+            if(pkt.pts < seekPts){
+                pkt.Drop();
+                continue;
+            }
+            demux->notify(pkt);
+            continue;
+        }
+
+        //解码需要显示的帧之前的数据
+        vdecode->sendPacket(pkt);
+        pkt.Drop();
+        XData data = vdecode->recvFrame();
+        if(data.size <= 0) continue;
+        if(data.pts >= seekPts) break;
+    }
+    mux.unlock();
+    setPause(false);
+    return re;
+}
 bool IPlayer::open(const char *path) {
     close();
     mux.lock();

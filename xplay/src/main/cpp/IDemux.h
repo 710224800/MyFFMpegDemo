@@ -14,6 +14,7 @@ class IDemux : public IObserver{
 public:
     //打开文件，或者流媒体 rtmp http rtsp
     virtual bool open(const char *url) = 0;  //纯虚函数
+    virtual bool seek(double pos) = 0;
     virtual void close() = 0;
     //获取视频参数
     virtual XParameter getVPara() = 0;

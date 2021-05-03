@@ -269,7 +269,7 @@ void XShader::getTexture(unsigned int index,int width,int height, unsigned char 
 
         //设置纹理属性
         glBindTexture(GL_TEXTURE_2D,texts[index]);
-        //缩小的过滤器
+        //缩小放大的过滤器，线性插值
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
         //设置纹理的格式和大小
